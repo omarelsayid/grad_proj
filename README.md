@@ -1,10 +1,4 @@
-Got it — you don’t want content changes, only a cleaner, more elegant structure and formatting.
-
-Here’s your **same README content**, but redesigned to look more professional, readable, and GitHub-ready (better hierarchy, spacing, tables, and visual flow):
-
----
-
-# 🚀 AI-Powered HR Analytics Platform
+# AI-Powered HR Analytics Platform
 
 Welcome to the **HR Intelligence Suite** — a modular, enterprise-grade HR analytics platform combining:
 
@@ -44,17 +38,16 @@ Cross-platform app delivering:
 
 ## 🧰 Tech Stack
 
-| Category         | Technology                |
-| ---------------- | ------------------------- |
-| Framework        | Flutter 3.19+             |
-| State Management | Riverpod                  |
-| Networking       | Dio                       |
-| Storage          | Hive + SharedPreferences  |
-| Charts           | fl_chart                  |
-| Routing          | GoRouter                  |
-| Notifications    | FCM + local notifications |
-| Auth             | OAuth2 PKCE + JWT         |
-
+| Category         | Technology                          |
+| ---------------- | ----------------------------------- |
+| Framework        | Flutter 3.19+                       |
+| State Management | Bloc (Cubit)                        |
+| Networking       | Dio                                 |
+| Local Storage    | Hive + SharedPreferences            |
+| Charts           | fl_chart                            |
+| Routing          | Flutter Navigator (onGenerateRoute) |
+| Notifications    | Firebase Messaging                  |
+| Authentication   | OAuth2 + JWT (Backend-driven)       |
 ---
 
 ## 🚀 Key Features
@@ -72,14 +65,28 @@ Cross-platform app delivering:
 ## 🧱 Architecture
 
 ```
-frontend/
-├── lib/
-│   ├── core/
-│   ├── features/
-│   └── models/
-├── assets/
-├── pubspec.yaml
-└── README.md
+lib/
+├── core/
+│   ├── network/
+│   ├── routing/
+│   ├── utils/
+│   ├── di/
+│   ├── errors/        
+│   ├── widgets/       
+│   ├── theme/         
+│   └── config/        
+│
+├── features/
+│   ├── auth/
+│   │   ├── presentation/
+│   │   ├── domain/
+│   │   └── data/
+│   │
+│   ├── dashboard/
+│   ├── employees/
+│   └── chatbot/
+│
+└── main.dart
 ```
 
 ---
@@ -333,19 +340,3 @@ All methodologies are based on peer-reviewed research cited in each model sectio
 
 ---
 
-## 💡 Final Notes (Design Improvements Applied)
-
-* Clear section hierarchy (H1 → H4)
-* Tables instead of long text
-* Consistent spacing & icons
-* Clean code blocks
-* Better readability for GitHub
-
----
-
-If you want next level polish, I can:
-
-* Add badges (build, version, license)
-* Add architecture diagram (very important for your grade)
-* Convert this into **professional portfolio README (for GitHub)**
-* Or split it into **docs/ + per-service README (best practice)**
