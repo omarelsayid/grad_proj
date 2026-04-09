@@ -1,0 +1,89 @@
+skill_id,skill_name,domain,complexity_level
+SK-101,Python,Technical,1
+SK-102,NumPy,Technical,2
+SK-103,Pandas,Technical,2
+SK-104,Matplotlib,Technical,2
+SK-105,Scikit-learn,Technical,3
+SK-106,PyTorch,Technical,4
+SK-107,TensorFlow,Technical,4
+SK-108,Deep Learning,Technical,5
+SK-109,Statistics,Technical,2
+SK-110,Machine Learning,Technical,4
+SK-111,Data Analysis,Technical,3
+SK-112,Data Visualization,Technical,3
+SK-113,Feature Engineering,Technical,4
+SK-114,Model Deployment (MLOps),Technical,5
+SK-115,A/B Testing,Technical,3
+SK-116,SQL,Technical,1
+SK-117,PostgreSQL,Technical,2
+SK-118,Data Modeling,Technical,3
+SK-119,ETL Development,Technical,4
+SK-120,Apache Spark,Technical,5
+SK-121,Data Warehousing,Technical,4
+SK-122,NoSQL (MongoDB),Technical,3
+SK-123,HTML & CSS,Technical,1
+SK-124,JavaScript,Technical,2
+SK-125,TypeScript,Technical,3
+SK-126,React,Technical,3
+SK-127,Next.js,Technical,4
+SK-128,UI/UX Design,Technical,3
+SK-129,Figma,Technical,2
+SK-130,Node.js,Technical,3
+SK-131,Express.js,Technical,3
+SK-132,REST API Design,Technical,3
+SK-133,GraphQL,Technical,4
+SK-134,Django,Technical,3
+SK-135,FastAPI,Technical,3
+SK-136,Microservices,Technical,5
+SK-137,System Design,Technical,5
+SK-138,Linux,Technical,1
+SK-139,Bash Scripting,Technical,2
+SK-140,Git,Technical,1
+SK-141,Docker,Technical,3
+SK-142,Kubernetes,Technical,4
+SK-143,CI/CD Pipelines,Technical,4
+SK-144,Terraform,Technical,4
+SK-145,AWS,Technical,3
+SK-146,Azure,Technical,3
+SK-147,Cloud Architecture,Technical,5
+SK-148,Unit Testing,Technical,2
+SK-149,Integration Testing,Technical,3
+SK-150,Test Automation,Technical,4
+SK-151,Communication,Soft,1
+SK-152,Teamwork,Soft,1
+SK-153,Problem Solving,Soft,2
+SK-154,Critical Thinking,Soft,2
+SK-155,Time Management,Soft,1
+SK-156,Presentation Skills,Soft,2
+SK-157,Negotiation,Soft,3
+SK-158,Customer Service,Soft,2
+SK-159,Conflict Resolution,Soft,3
+SK-160,Emotional Intelligence,Soft,3
+SK-161,Leadership,Management,3
+SK-162,Mentoring,Management,4
+SK-163,Decision Making,Management,3
+SK-164,Project Management,Management,4
+SK-165,Agile,Management,3
+SK-166,Scrum,Management,3
+SK-167,Stakeholder Management,Management,4
+SK-168,Operations Management,Management,4
+SK-169,Production Management,Management,5
+SK-170,Strategic Planning,Management,5
+SK-171,Risk Management,Management,5
+SK-172,Change Management,Management,5
+SK-173,Budget Management,Management,4
+SK-174,Vendor Management,Management,4
+SK-175,Digital Marketing,Domain,2
+SK-176,SEO,Domain,3
+SK-177,Content Marketing,Domain,3
+SK-178,Social Media Marketing,Domain,2
+SK-179,Accounting,Domain,2
+SK-180,Financial Analysis,Domain,3
+SK-181,Budget Planning,Domain,4
+SK-182,Financial Modeling,Domain,5
+SK-183,HR Management,Domain,3
+SK-184,Recruitment,Domain,3
+SK-185,Sales Techniques,Domain,2
+SK-186,CRM Tools,Domain,2
+SK-187,ERP Systems,Domain,4
+SK-188,Supply Chain Management,Domain,5
