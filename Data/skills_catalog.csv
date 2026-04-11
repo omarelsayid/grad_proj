@@ -1,0 +1,74 @@
+skill_id,skill_name,category,complexity
+SK001,Python,Programming Languages,3
+SK002,JavaScript,Programming Languages,5
+SK003,TypeScript,Programming Languages,4
+SK004,Java,Programming Languages,3
+SK005,C++,Programming Languages,2
+SK006,Go,Programming Languages,2
+SK007,Rust,Programming Languages,1
+SK008,Swift,Programming Languages,5
+SK009,Kotlin,Programming Languages,4
+SK010,PHP,Programming Languages,4
+SK011,HTML & CSS,Web Development,1
+SK012,React,Web Development,5
+SK013,Angular,Web Development,4
+SK014,Vue.js,Web Development,2
+SK015,Next.js,Web Development,2
+SK016,Node.js,Web Development,2
+SK017,Django,Web Development,3
+SK018,Flask,Web Development,3
+SK019,Spring Boot,Web Development,3
+SK020,ASP.NET,Web Development,2
+SK021,SQL,Data & Analytics,4
+SK022,Data Analysis,Data & Analytics,2
+SK023,Data Visualization,Data & Analytics,2
+SK024,Statistics,Data & Analytics,3
+SK025,Machine Learning,Data & Analytics,3
+SK026,Deep Learning,Data & Analytics,4
+SK027,Pandas,Data & Analytics,2
+SK028,NumPy,Data & Analytics,3
+SK029,Tableau,Data & Analytics,3
+SK030,Power BI,Data & Analytics,1
+SK031,AWS,Cloud & DevOps,4
+SK032,Azure,Cloud & DevOps,2
+SK033,GCP,Cloud & DevOps,1
+SK034,Docker,Cloud & DevOps,5
+SK035,Kubernetes,Cloud & DevOps,5
+SK036,CI/CD Pipelines,Cloud & DevOps,4
+SK037,Terraform,Cloud & DevOps,3
+SK038,Ansible,Cloud & DevOps,1
+SK039,Linux,Cloud & DevOps,4
+SK040,Bash Scripting,Cloud & DevOps,3
+SK041,Communication,Soft Skills,2
+SK042,Leadership,Soft Skills,3
+SK043,Problem Solving,Soft Skills,1
+SK044,Project Management,Soft Skills,5
+SK045,Teamwork,Soft Skills,2
+SK046,Critical Thinking,Soft Skills,4
+SK047,Time Management,Soft Skills,3
+SK048,Negotiation,Soft Skills,3
+SK049,Mentoring,Soft Skills,3
+SK050,Conflict Resolution,Soft Skills,2
+SK051,Agile Methodologies,Business & Product,5
+SK052,Scrum,Business & Product,4
+SK053,Product Management,Business & Product,5
+SK054,Requirements Analysis,Business & Product,5
+SK055,User Stories,Business & Product,3
+SK056,JIRA,Business & Product,5
+SK057,Confluence,Business & Product,1
+SK058,Technical Writing,Business & Product,2
+SK059,MongoDB,Database & Storage,1
+SK060,PostgreSQL,Database & Storage,3
+SK061,MySQL,Database & Storage,3
+SK062,Redis,Database & Storage,2
+SK063,Elasticsearch,Database & Storage,4
+SK064,Cassandra,Database & Storage,3
+SK065,Oracle,Database & Storage,2
+SK066,Snowflake,Database & Storage,3
+SK067,Cybersecurity,Security & Testing,2
+SK068,Penetration Testing,Security & Testing,4
+SK069,Unit Testing,Security & Testing,1
+SK070,Integration Testing,Security & Testing,5
+SK071,OWASP,Security & Testing,4
+SK072,Encryption,Security & Testing,2
+SK073,Identity Management,Security & Testing,1

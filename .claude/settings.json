@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m pip install joblib scikit-learn)",
+      "Bash(python -c \"import joblib; import sklearn; print\\('ok'\\)\")",
+      "Bash(python -m pip install joblib==1.4.2 scikit-learn==1.4.2)",
+      "Bash(python -m pytest --version)",
+      "Bash(python -m pip install networkx imbalanced-learn --no-deps)",
+      "Bash(python -c \"import networkx; import imblearn; print\\('ok'\\)\")",
+      "Bash(pip show:*)"
+    ]
+  }
+}

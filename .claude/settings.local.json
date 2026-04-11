@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/malak/.claude/projects/c--Users-malak-OneDrive-Desktop-grad-proj/**)",
+      "Read(//c/Users/malak/.claude/projects/c--Users-malak-OneDrive-Desktop-grad-proj/memory/**)",
+      "Bash(uvicorn app.main:app --reload --port 8000)",
+      "Bash(start \"\" \"http://127.0.0.1:8000/docs\")",
+      "Bash(python -m uvicorn --version)",
+      "Bash(python -m pip install -r requirements.txt)",
+      "Bash(python -c \"import numpy\")",
+      "Bash(python -c \"import pandas\")",
+      "Bash(python -c \"import fastapi; print\\('fastapi ok'\\)\")",
+      "Bash(python -m pip install \"fastapi==0.111.0\" \"uvicorn[standard]==0.29.0\" \"pydantic==2.7.1\" \"psycopg2-binary==2.9.9\" \"python-dotenv==1.0.1\")",
+      "Bash(python -c \"import joblib; print\\('joblib ok'\\)\")",
+      "Bash(python -m pip install joblib==1.4.2 --no-deps)",
+      "Bash(python -c \"from app.main import app; print\\('imports ok'\\)\")",
+      "Bash(flutter --version)",
+      "Bash(python -m pytest tests/ --collect-only -q)"
+    ]
+  }
+}

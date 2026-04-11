@@ -1,0 +1,87 @@
+job_role_id,job_role_name,skill_id,skill_name,min_proficiency,importance_weight
+1,Software Engineer,SK001,Python,4,0.94
+1,Software Engineer,SK004,Java,4,0.69
+1,Software Engineer,SK021,SQL,2,0.87
+1,Software Engineer,SK043,Problem Solving,2,0.73
+1,Software Engineer,SK051,Agile Methodologies,3,0.47
+2,Data Scientist,SK001,Python,2,0.86
+2,Data Scientist,SK021,SQL,3,0.95
+2,Data Scientist,SK024,Statistics,3,0.74
+2,Data Scientist,SK025,Machine Learning,3,0.36
+2,Data Scientist,SK023,Data Visualization,4,0.68
+2,Data Scientist,SK043,Problem Solving,3,0.69
+2,Data Scientist,SK041,Communication,3,0.9
+3,DevOps Engineer,SK039,Linux,3,0.31
+3,DevOps Engineer,SK034,Docker,2,0.32
+3,DevOps Engineer,SK035,Kubernetes,3,0.46
+3,DevOps Engineer,SK036,CI/CD Pipelines,3,0.75
+3,DevOps Engineer,SK031,AWS,3,0.51
+3,DevOps Engineer,SK001,Python,4,0.85
+3,DevOps Engineer,SK040,Bash Scripting,2,0.44
+4,Product Manager,SK041,Communication,2,0.99
+4,Product Manager,SK042,Leadership,3,0.93
+4,Product Manager,SK051,Agile Methodologies,3,0.7
+4,Product Manager,SK055,User Stories,2,0.75
+4,Product Manager,SK056,JIRA,2,0.7
+4,Product Manager,SK022,Data Analysis,3,0.46
+4,Product Manager,SK048,Negotiation,2,0.41
+5,UX Designer,SK011,HTML & CSS,2,0.71
+5,UX Designer,SK002,JavaScript,3,0.8
+5,UX Designer,SK055,User Stories,2,0.51
+5,UX Designer,SK041,Communication,2,0.82
+5,UX Designer,SK043,Problem Solving,2,0.77
+6,QA Engineer,SK069,Unit Testing,2,0.56
+6,QA Engineer,SK070,Integration Testing,3,0.48
+6,QA Engineer,SK001,Python,3,0.99
+6,QA Engineer,SK043,Problem Solving,2,0.55
+6,QA Engineer,SK036,CI/CD Pipelines,2,0.44
+7,Technical Lead,SK042,Leadership,3,0.92
+7,Technical Lead,SK044,Project Management,3,0.33
+7,Technical Lead,SK041,Communication,3,0.98
+7,Technical Lead,SK049,Mentoring,3,0.37
+8,Business Analyst,SK022,Data Analysis,2,0.79
+8,Business Analyst,SK021,SQL,2,0.93
+8,Business Analyst,SK054,Requirements Analysis,3,0.42
+8,Business Analyst,SK041,Communication,3,0.87
+8,Business Analyst,SK055,User Stories,2,0.62
+8,Business Analyst,SK043,Problem Solving,2,0.35
+8,Business Analyst,SK056,JIRA,3,0.46
+9,Data Engineer,SK021,SQL,2,0.81
+9,Data Engineer,SK001,Python,2,0.94
+9,Data Engineer,SK059,MongoDB,2,0.56
+10,Frontend Developer,SK002,JavaScript,2,0.93
+10,Frontend Developer,SK003,TypeScript,2,0.65
+10,Frontend Developer,SK012,React,2,0.77
+10,Frontend Developer,SK011,HTML & CSS,2,0.47
+10,Frontend Developer,SK015,Next.js,2,0.76
+10,Frontend Developer,SK043,Problem Solving,3,0.43
+11,Backend Developer,SK001,Python,2,0.96
+11,Backend Developer,SK004,Java,2,0.56
+11,Backend Developer,SK021,SQL,2,0.82
+11,Backend Developer,SK016,Node.js,3,0.75
+11,Backend Developer,SK017,Django,2,0.47
+12,Full Stack Developer,SK002,JavaScript,2,0.95
+12,Full Stack Developer,SK001,Python,3,0.98
+12,Full Stack Developer,SK012,React,3,0.62
+12,Full Stack Developer,SK016,Node.js,2,0.38
+12,Full Stack Developer,SK021,SQL,3,0.92
+12,Full Stack Developer,SK011,HTML & CSS,2,0.35
+13,ML Engineer,SK001,Python,4,0.8
+13,ML Engineer,SK025,Machine Learning,3,0.57
+13,ML Engineer,SK026,Deep Learning,4,0.63
+13,ML Engineer,SK021,SQL,3,0.94
+13,ML Engineer,SK022,Data Analysis,3,0.46
+13,ML Engineer,SK039,Linux,4,0.62
+13,ML Engineer,SK034,Docker,4,0.63
+14,Cloud Architect,SK031,AWS,3,0.35
+14,Cloud Architect,SK032,Azure,3,0.43
+14,Cloud Architect,SK033,GCP,3,0.79
+14,Cloud Architect,SK034,Docker,3,0.75
+14,Cloud Architect,SK035,Kubernetes,4,0.7
+14,Cloud Architect,SK037,Terraform,3,0.59
+15,Security Analyst,SK067,Cybersecurity,2,0.4
+15,Security Analyst,SK039,Linux,3,0.44
+15,Security Analyst,SK001,Python,2,0.93
+15,Security Analyst,SK068,Penetration Testing,2,0.77
+15,Security Analyst,SK071,OWASP,3,0.76
+15,Security Analyst,SK072,Encryption,2,0.31

@@ -1,0 +1,23 @@
+job_role_id,role_name,department_id,level,salary_min,salary_max,bonus_eligibility_percentage
+1,Frontend Developer,1,Junior,10000,18000,5
+2,Senior Frontend Developer,1,Senior,22000,35000,12
+3,Backend Developer,1,Junior,12000,20000,5
+4,Full Stack Developer,1,Mid,15000,26000,8
+5,Tech Lead,1,Lead,30000,42000,18
+6,DevOps Engineer,1,Mid,16000,28000,8
+7,QA Engineer,1,Junior,10000,17000,5
+8,Data Analyst,2,Junior,11000,19000,5
+9,Senior Data Analyst,2,Senior,22000,34000,12
+10,Business Analyst,2,Mid,13000,22000,8
+11,HR Specialist,3,Junior,8000,13000,4
+12,HR Manager,3,Manager,20000,32000,15
+13,Marketing Specialist,4,Junior,9000,15000,6
+14,Marketing Manager,4,Manager,19000,30000,15
+15,UX Designer,4,Mid,12000,21000,7
+16,Financial Analyst,5,Mid,13000,22000,8
+17,Accountant,5,Junior,9000,15000,4
+18,Operations Manager,6,Manager,22000,36000,18
+19,Product Manager,6,Senior,24000,38000,15
+20,Sales Representative,7,Junior,7000,13000,10
+21,Senior Sales Representative,7,Senior,15000,26000,18
+22,Customer Support Specialist,8,Junior,6500,11000,4
