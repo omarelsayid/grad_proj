@@ -1,183 +1,183 @@
 training_id,employee_id,resource_id,resource_title,completion_date,completion_score,duration_hours,feedback_score,attempt_number,status,validated_by_manager
-TRN-00001,EMP-0003,LR-030,Budget & Vendor Management,2025-02-19,71,6,3.6,1,Completed,Yes
-TRN-00002,EMP-0005,LR-007,Feature Engineering for ML,2025-07-17,57,8,3.2,1,Completed,Yes
-TRN-00003,EMP-0010,LR-007,Feature Engineering for ML,2024-05-01,85,8,4.3,1,Completed,Yes
-TRN-00004,EMP-0012,LR-032,Critical Thinking & Problem Solving,2025-07-15,91,4,4.4,1,Completed,Yes
-TRN-00005,EMP-0013,LR-005,Machine Learning A-Z,2024-11-06,59,20,3.3,1,Completed,Yes
-TRN-00006,EMP-0013,LR-020,Cloud Architecture Design,2024-12-04,73,14,3.8,2,Completed,Yes
-TRN-00007,EMP-0013,LR-024,Leadership Essentials,2025-11-15,70,6,3.7,3,Completed,Yes
-TRN-00008,EMP-0013,LR-016,Docker & Kubernetes Essentials,2024-03-29,79,14,4.0,4,Completed,Yes
-TRN-00009,EMP-0014,LR-011,Next.js Full-Stack Development,2025-07-24,66,14,3.6,1,Completed,Yes
-TRN-00010,EMP-0017,LR-037,Financial Analysis Basics,2025-06-21,78,6,4.0,1,Completed,Yes
-TRN-00011,EMP-0018,LR-025,Agile & Scrum Certification,2025-04-03,56,16,3.2,1,Completed,Yes
-TRN-00012,EMP-0021,LR-004,Advanced SQL & PostgreSQL,2023-04-06,79,8,4.2,1,Completed,Yes
-TRN-00013,EMP-0021,LR-019,AWS Cloud Practitioner,2025-01-30,92,16,4.6,2,Completed,Yes
-TRN-00014,EMP-0023,LR-005,Machine Learning A-Z,2024-08-24,63,20,3.3,1,Completed,Yes
-TRN-00015,EMP-0023,LR-022,Software Testing Fundamentals,2023-10-23,86,8,4.1,2,Completed,Yes
-TRN-00016,EMP-0024,LR-010,React & TypeScript Bootcamp,2025-07-09,77,16,4.0,1,Completed,Yes
-TRN-00017,EMP-0027,LR-026,Project Management Professional,2025-08-06,73,40,3.5,1,Completed,Yes
-TRN-00018,EMP-0027,LR-021,Terraform Infrastructure as Code,2025-11-18,60,8,3.0,2,Completed,Yes
-TRN-00019,EMP-0028,LR-033,Negotiation & Conflict Resolution,2025-02-28,50,4,2.9,1,Completed,No
-TRN-00020,EMP-0029,LR-029,Operations & Production Management,2024-06-08,63,10,3.3,1,Completed,Yes
-TRN-00021,EMP-0029,LR-038,Financial Modeling & Valuation,2025-04-25,48,10,2.8,2,Completed,No
-TRN-00022,EMP-0029,LR-002,Python for Data Science,2025-04-02,68,12,3.5,3,Completed,Yes
-TRN-00023,EMP-0029,LR-027,Strategic Planning & Execution,2024-12-19,69,8,3.5,4,Completed,Yes
-TRN-00024,EMP-0030,LR-019,AWS Cloud Practitioner,2025-07-22,50,16,3.0,1,Completed,No
-TRN-00025,EMP-0031,LR-030,Budget & Vendor Management,2025-04-09,81,6,4.0,1,Completed,Yes
-TRN-00026,EMP-0031,LR-020,Cloud Architecture Design,2023-12-01,80,14,4.0,2,Completed,Yes
-TRN-00027,EMP-0031,LR-007,Feature Engineering for ML,2023-08-06,92,8,4.4,3,Completed,Yes
-TRN-00028,EMP-0034,LR-036,SEO & Content Marketing,2025-06-21,73,6,3.5,1,Completed,Yes
-TRN-00029,EMP-0034,LR-035,Digital Marketing Fundamentals,2025-11-09,49,8,2.6,2,Completed,No
-TRN-00030,EMP-0035,LR-031,Communication & Presentation Skills,2025-03-10,64,4,3.5,1,Completed,Yes
-TRN-00031,EMP-0038,LR-004,Advanced SQL & PostgreSQL,2025-10-22,79,8,4.1,1,Completed,Yes
-TRN-00032,EMP-0038,LR-026,Project Management Professional,2025-09-29,75,40,4.0,2,Completed,Yes
-TRN-00033,EMP-0044,LR-012,Node.js & Express.js Deep Dive,2025-05-30,81,12,4.0,1,Completed,Yes
-TRN-00034,EMP-0044,LR-011,Next.js Full-Stack Development,2024-07-19,70,14,3.6,2,Completed,Yes
-TRN-00035,EMP-0048,LR-039,HR Management Best Practices,2025-01-16,58,8,3.3,1,Completed,Yes
-TRN-00036,EMP-0048,LR-003,SQL Masterclass,2025-07-15,68,10,3.7,2,Completed,Yes
-TRN-00037,EMP-0048,LR-027,Strategic Planning & Execution,2025-02-12,53,8,3.2,3,Completed,Yes
-TRN-00038,EMP-0050,LR-034,Emotional Intelligence at Work,2025-09-24,63,4,3.4,1,Completed,Yes
-TRN-00039,EMP-0050,LR-038,Financial Modeling & Valuation,2025-11-08,56,10,3.1,2,Completed,Yes
-TRN-00040,EMP-0054,LR-026,Project Management Professional,2025-02-11,71,40,3.6,1,Completed,Yes
-TRN-00041,EMP-0057,LR-024,Leadership Essentials,2025-11-15,57,6,3.1,1,Completed,Yes
-TRN-00042,EMP-0057,LR-008,MLOps: Model Deployment,2025-06-18,44,12,2.6,2,Completed,No
-TRN-00043,EMP-0058,LR-005,Machine Learning A-Z,2024-10-30,63,20,3.5,1,Completed,Yes
-TRN-00044,EMP-0058,LR-025,Agile & Scrum Certification,2025-02-23,66,16,3.6,2,Completed,Yes
-TRN-00045,EMP-0058,LR-013,REST API Design & GraphQL,2024-09-05,66,10,3.6,3,Completed,Yes
-TRN-00046,EMP-0059,LR-022,Software Testing Fundamentals,2025-11-08,84,8,4.2,1,Completed,Yes
-TRN-00047,EMP-0059,LR-028,Risk Management Fundamentals,2023-10-31,79,6,4.1,2,Completed,Yes
-TRN-00048,EMP-0059,LR-038,Financial Modeling & Valuation,2023-11-02,81,10,4.1,3,Completed,Yes
-TRN-00049,EMP-0064,LR-025,Agile & Scrum Certification,2024-12-31,55,16,3.1,1,Completed,Yes
-TRN-00050,EMP-0064,LR-039,HR Management Best Practices,2024-05-11,47,8,2.8,2,Completed,No
-TRN-00051,EMP-0064,LR-035,Digital Marketing Fundamentals,2024-02-18,63,8,3.3,3,Completed,Yes
-TRN-00052,EMP-0064,LR-036,SEO & Content Marketing,2025-02-25,64,6,3.4,4,Completed,Yes
-TRN-00053,EMP-0065,LR-009,Statistics for Data Science,2024-06-01,67,8,3.4,1,Completed,Yes
-TRN-00054,EMP-0067,LR-024,Leadership Essentials,2025-06-16,98,6,4.7,1,Completed,Yes
-TRN-00055,EMP-0069,LR-006,Deep Learning Specialization,2025-07-09,58,30,3.3,1,Completed,Yes
-TRN-00056,EMP-0069,LR-040,Sales Mastery & CRM Tools,2025-07-07,68,10,3.7,2,Completed,Yes
-TRN-00057,EMP-0069,LR-025,Agile & Scrum Certification,2025-03-19,66,16,3.6,3,Completed,Yes
-TRN-00058,EMP-0071,LR-005,Machine Learning A-Z,2024-10-12,71,20,3.7,1,Completed,Yes
-TRN-00059,EMP-0073,LR-005,Machine Learning A-Z,2023-12-18,67,20,3.6,1,Completed,Yes
-TRN-00060,EMP-0073,LR-014,System Design for Engineers,2025-10-16,72,16,3.8,2,Completed,Yes
-TRN-00061,EMP-0073,LR-033,Negotiation & Conflict Resolution,2024-12-01,76,4,3.9,3,Completed,Yes
-TRN-00062,EMP-0073,LR-020,Cloud Architecture Design,2025-11-22,76,14,3.9,4,Completed,Yes
-TRN-00063,EMP-0073,LR-034,Emotional Intelligence at Work,2025-04-17,67,4,3.6,5,Completed,Yes
-TRN-00064,EMP-0076,LR-001,Python for Beginners,2024-07-25,60,10,3.3,1,Completed,Yes
-TRN-00065,EMP-0076,LR-033,Negotiation & Conflict Resolution,2025-07-08,58,4,3.2,2,Completed,Yes
-TRN-00066,EMP-0076,LR-010,React & TypeScript Bootcamp,2024-08-11,50,16,2.9,3,Completed,No
-TRN-00067,EMP-0077,LR-009,Statistics for Data Science,2024-09-22,78,8,3.7,1,Completed,Yes
-TRN-00068,EMP-0083,LR-024,Leadership Essentials,2025-06-29,73,6,3.7,1,Completed,Yes
-TRN-00069,EMP-0084,LR-024,Leadership Essentials,2025-11-30,77,6,4.0,1,Completed,Yes
-TRN-00070,EMP-0084,LR-014,System Design for Engineers,2024-12-02,82,16,4.2,2,Completed,Yes
-TRN-00071,EMP-0085,LR-033,Negotiation & Conflict Resolution,2024-12-19,80,4,3.9,1,Completed,Yes
-TRN-00072,EMP-0087,LR-027,Strategic Planning & Execution,2025-04-05,70,8,3.5,1,Completed,Yes
-TRN-00073,EMP-0091,LR-020,Cloud Architecture Design,2025-07-30,70,14,3.4,1,Completed,Yes
-TRN-00074,EMP-0093,LR-033,Negotiation & Conflict Resolution,2025-10-03,79,4,3.9,1,Completed,Yes
-TRN-00075,EMP-0093,LR-019,AWS Cloud Practitioner,2025-09-23,57,16,3.1,2,Completed,Yes
-TRN-00076,EMP-0093,LR-038,Financial Modeling & Valuation,2025-06-02,71,10,3.6,3,Completed,Yes
-TRN-00077,EMP-0093,LR-007,Feature Engineering for ML,2023-08-17,66,8,3.4,4,Completed,Yes
-TRN-00078,EMP-0093,LR-029,Operations & Production Management,2024-08-11,54,10,3.0,5,Completed,Yes
-TRN-00079,EMP-0093,LR-002,Python for Data Science,2024-10-10,51,12,2.9,6,Completed,Yes
-TRN-00080,EMP-0093,LR-035,Digital Marketing Fundamentals,2024-07-14,77,8,3.8,7,Completed,Yes
-TRN-00081,EMP-0094,LR-017,Kubernetes Advanced,2025-05-22,85,12,4.3,1,Completed,Yes
-TRN-00082,EMP-0096,LR-026,Project Management Professional,2025-03-29,65,40,3.7,1,Completed,Yes
-TRN-00083,EMP-0098,LR-040,Sales Mastery & CRM Tools,2025-02-18,74,10,3.6,1,Completed,Yes
-TRN-00084,EMP-0099,LR-035,Digital Marketing Fundamentals,2025-03-11,66,8,3.5,1,Completed,Yes
-TRN-00085,EMP-0100,LR-014,System Design for Engineers,2025-08-30,60,16,3.4,1,Completed,Yes
-TRN-00086,EMP-0103,LR-024,Leadership Essentials,2024-11-14,82,6,4.2,1,Completed,Yes
-TRN-00087,EMP-0103,LR-017,Kubernetes Advanced,2025-01-27,78,12,4.0,2,Completed,Yes
-TRN-00088,EMP-0105,LR-005,Machine Learning A-Z,2025-09-21,92,20,4.4,1,Completed,Yes
-TRN-00089,EMP-0106,LR-025,Agile & Scrum Certification,2025-12-02,61,16,3.4,1,Completed,Yes
-TRN-00090,EMP-0106,LR-011,Next.js Full-Stack Development,2025-10-16,52,14,3.1,2,Completed,Yes
-TRN-00091,EMP-0107,LR-034,Emotional Intelligence at Work,2024-12-16,71,4,3.8,1,Completed,Yes
-TRN-00092,EMP-0107,LR-037,Financial Analysis Basics,2025-09-29,84,6,4.3,2,Completed,Yes
-TRN-00093,EMP-0110,LR-009,Statistics for Data Science,2023-11-08,77,8,3.6,1,Completed,Yes
-TRN-00094,EMP-0116,LR-030,Budget & Vendor Management,2025-05-24,79,6,4.0,1,Completed,Yes
-TRN-00095,EMP-0116,LR-025,Agile & Scrum Certification,2024-04-26,60,16,3.3,2,Completed,Yes
-TRN-00096,EMP-0116,LR-012,Node.js & Express.js Deep Dive,2025-08-31,56,12,3.2,3,Completed,Yes
-TRN-00097,EMP-0116,LR-017,Kubernetes Advanced,2025-06-22,70,12,3.7,4,Completed,Yes
-TRN-00098,EMP-0116,LR-033,Negotiation & Conflict Resolution,2025-05-21,68,4,3.6,5,Completed,Yes
-TRN-00099,EMP-0116,LR-015,Microservices Architecture,2024-08-04,73,14,3.8,6,Completed,Yes
-TRN-00100,EMP-0117,LR-005,Machine Learning A-Z,2025-01-31,92,20,4.2,1,Completed,Yes
-TRN-00101,EMP-0120,LR-021,Terraform Infrastructure as Code,2023-11-10,69,8,3.7,1,Completed,Yes
-TRN-00102,EMP-0120,LR-004,Advanced SQL & PostgreSQL,2025-04-25,74,8,3.9,2,Completed,Yes
-TRN-00103,EMP-0122,LR-001,Python for Beginners,2024-03-31,79,10,4.1,1,Completed,Yes
-TRN-00104,EMP-0122,LR-017,Kubernetes Advanced,2025-10-31,77,12,4.1,2,Completed,Yes
-TRN-00105,EMP-0122,LR-011,Next.js Full-Stack Development,2025-01-23,74,14,4.0,3,Completed,Yes
-TRN-00106,EMP-0123,LR-003,SQL Masterclass,2025-01-31,84,10,4.2,1,Completed,Yes
-TRN-00107,EMP-0123,LR-007,Feature Engineering for ML,2025-01-31,71,8,3.7,2,Completed,Yes
-TRN-00108,EMP-0130,LR-006,Deep Learning Specialization,2025-08-31,67,30,3.6,1,Completed,Yes
-TRN-00109,EMP-0130,LR-032,Critical Thinking & Problem Solving,2025-06-18,65,4,3.5,2,Completed,Yes
-TRN-00110,EMP-0131,LR-011,Next.js Full-Stack Development,2025-10-23,68,14,3.6,1,Completed,Yes
-TRN-00111,EMP-0131,LR-007,Feature Engineering for ML,2024-06-03,58,8,3.3,2,Completed,Yes
-TRN-00112,EMP-0131,LR-033,Negotiation & Conflict Resolution,2024-01-16,86,4,4.2,3,Completed,Yes
-TRN-00113,EMP-0131,LR-010,React & TypeScript Bootcamp,2025-08-28,69,16,3.6,4,Completed,Yes
-TRN-00114,EMP-0131,LR-017,Kubernetes Advanced,2025-09-16,71,12,3.7,5,Completed,Yes
-TRN-00115,EMP-0134,LR-026,Project Management Professional,2024-11-25,58,40,2.9,1,Completed,Yes
-TRN-00116,EMP-0134,LR-010,React & TypeScript Bootcamp,2025-07-01,54,16,2.7,2,Completed,Yes
-TRN-00117,EMP-0134,LR-029,Operations & Production Management,2025-04-11,65,10,3.1,3,Completed,Yes
-TRN-00118,EMP-0137,LR-038,Financial Modeling & Valuation,2025-05-16,67,10,3.5,1,Completed,Yes
-TRN-00119,EMP-0137,LR-029,Operations & Production Management,2025-11-27,78,10,3.9,2,Completed,Yes
-TRN-00120,EMP-0138,LR-022,Software Testing Fundamentals,2024-05-02,59,8,3.3,1,Completed,Yes
-TRN-00121,EMP-0138,LR-021,Terraform Infrastructure as Code,2025-11-07,54,8,3.2,2,Completed,Yes
-TRN-00122,EMP-0138,LR-038,Financial Modeling & Valuation,2024-06-08,64,10,3.5,3,Completed,Yes
-TRN-00123,EMP-0139,LR-014,System Design for Engineers,2024-10-30,71,16,3.5,1,Completed,Yes
-TRN-00124,EMP-0139,LR-019,AWS Cloud Practitioner,2025-11-11,71,16,3.5,2,Completed,Yes
-TRN-00125,EMP-0139,LR-011,Next.js Full-Stack Development,2025-02-08,59,14,3.1,3,Completed,Yes
-TRN-00126,EMP-0139,LR-004,Advanced SQL & PostgreSQL,2025-10-11,59,8,3.1,4,Completed,Yes
-TRN-00127,EMP-0140,LR-037,Financial Analysis Basics,2025-08-09,66,6,3.5,1,Completed,Yes
-TRN-00128,EMP-0140,LR-027,Strategic Planning & Execution,2025-06-11,84,8,4.1,2,Completed,Yes
-TRN-00129,EMP-0141,LR-021,Terraform Infrastructure as Code,2025-02-17,50,8,3.0,1,Completed,No
-TRN-00130,EMP-0142,LR-035,Digital Marketing Fundamentals,2025-05-04,74,8,3.8,1,Completed,Yes
-TRN-00131,EMP-0143,LR-006,Deep Learning Specialization,2025-05-23,53,30,2.7,1,Completed,Yes
-TRN-00132,EMP-0143,LR-033,Negotiation & Conflict Resolution,2025-11-22,60,4,3.0,2,Completed,Yes
-TRN-00133,EMP-0144,LR-034,Emotional Intelligence at Work,2025-02-13,65,4,3.4,1,Completed,Yes
-TRN-00134,EMP-0144,LR-026,Project Management Professional,2025-07-30,65,40,3.4,2,Completed,Yes
-TRN-00135,EMP-0144,LR-030,Budget & Vendor Management,2025-04-12,72,6,3.6,3,Completed,Yes
-TRN-00136,EMP-0144,LR-003,SQL Masterclass,2025-06-28,62,10,3.3,4,Completed,Yes
-TRN-00137,EMP-0145,LR-012,Node.js & Express.js Deep Dive,2024-08-10,64,12,3.5,1,Completed,Yes
-TRN-00138,EMP-0150,LR-012,Node.js & Express.js Deep Dive,2024-11-14,63,12,3.5,1,Completed,Yes
-TRN-00139,EMP-0150,LR-027,Strategic Planning & Execution,2025-11-16,70,8,3.7,2,Completed,Yes
-TRN-00140,EMP-0150,LR-004,Advanced SQL & PostgreSQL,2024-09-27,68,8,3.6,3,Completed,Yes
-TRN-00141,EMP-0150,LR-002,Python for Data Science,2024-06-20,75,12,3.9,4,Completed,Yes
-TRN-00142,EMP-0150,LR-001,Python for Beginners,2024-03-09,72,10,3.8,5,Completed,Yes
-TRN-00143,EMP-0154,LR-037,Financial Analysis Basics,2025-09-11,52,6,2.6,1,Completed,Yes
-TRN-00144,EMP-0156,LR-040,Sales Mastery & CRM Tools,2025-03-08,53,10,3.0,1,Completed,Yes
-TRN-00145,EMP-0156,LR-031,Communication & Presentation Skills,2025-11-09,70,4,3.6,2,Completed,Yes
-TRN-00146,EMP-0157,LR-016,Docker & Kubernetes Essentials,2024-12-03,55,14,3.1,1,Completed,Yes
-TRN-00147,EMP-0158,LR-016,Docker & Kubernetes Essentials,2025-09-15,58,14,3.0,1,Completed,Yes
-TRN-00148,EMP-0158,LR-002,Python for Data Science,2025-11-14,42,12,2.4,2,Completed,No
-TRN-00149,EMP-0159,LR-037,Financial Analysis Basics,2025-07-30,65,6,3.6,1,Completed,Yes
-TRN-00150,EMP-0161,LR-026,Project Management Professional,2024-11-12,78,40,4.0,1,Completed,Yes
-TRN-00151,EMP-0163,LR-011,Next.js Full-Stack Development,2024-06-03,98,14,4.8,1,Completed,Yes
-TRN-00152,EMP-0164,LR-003,SQL Masterclass,2025-04-27,81,10,3.8,1,Completed,Yes
-TRN-00153,EMP-0165,LR-004,Advanced SQL & PostgreSQL,2025-03-20,66,8,3.3,1,Completed,Yes
-TRN-00154,EMP-0165,LR-012,Node.js & Express.js Deep Dive,2024-11-15,74,12,3.6,2,Completed,Yes
-TRN-00155,EMP-0166,LR-005,Machine Learning A-Z,2025-01-26,80,20,4.1,1,Completed,Yes
-TRN-00156,EMP-0168,LR-025,Agile & Scrum Certification,2024-11-17,65,16,3.1,1,Completed,Yes
-TRN-00157,EMP-0170,LR-032,Critical Thinking & Problem Solving,2024-07-15,68,4,3.5,1,Completed,Yes
-TRN-00158,EMP-0170,LR-040,Sales Mastery & CRM Tools,2024-08-07,69,10,3.5,2,Completed,Yes
-TRN-00159,EMP-0171,LR-036,SEO & Content Marketing,2025-03-24,76,6,3.8,1,Completed,Yes
-TRN-00160,EMP-0171,LR-010,React & TypeScript Bootcamp,2024-07-08,62,16,3.4,2,Completed,Yes
-TRN-00161,EMP-0171,LR-035,Digital Marketing Fundamentals,2024-12-20,70,8,3.6,3,Completed,Yes
-TRN-00162,EMP-0171,LR-002,Python for Data Science,2024-06-14,68,12,3.6,4,Completed,Yes
-TRN-00163,EMP-0172,LR-034,Emotional Intelligence at Work,2025-02-01,80,4,4.0,1,Completed,Yes
-TRN-00164,EMP-0172,LR-001,Python for Beginners,2025-11-10,87,10,4.3,2,Completed,Yes
-TRN-00165,EMP-0173,LR-040,Sales Mastery & CRM Tools,2024-05-22,64,10,3.4,1,Completed,Yes
-TRN-00166,EMP-0174,LR-020,Cloud Architecture Design,2024-11-04,95,14,4.7,1,Completed,Yes
-TRN-00167,EMP-0174,LR-022,Software Testing Fundamentals,2025-04-14,78,8,4.1,2,Completed,Yes
-TRN-00168,EMP-0175,LR-012,Node.js & Express.js Deep Dive,2025-06-30,69,12,3.5,1,Completed,Yes
-TRN-00169,EMP-0175,LR-007,Feature Engineering for ML,2024-06-03,64,8,3.3,2,Completed,Yes
-TRN-00170,EMP-0175,LR-008,MLOps: Model Deployment,2024-08-03,48,12,2.8,3,Completed,No
-TRN-00171,EMP-0179,LR-014,System Design for Engineers,2024-09-13,89,16,4.4,1,Completed,Yes
-TRN-00172,EMP-0181,LR-009,Statistics for Data Science,2025-10-10,64,8,3.0,1,Completed,Yes
-TRN-00173,EMP-0182,LR-018,CI/CD with GitHub Actions,2025-11-14,59,10,3.3,1,Completed,Yes
-TRN-00174,EMP-0182,LR-003,SQL Masterclass,2025-03-01,68,10,3.6,2,Completed,Yes
-TRN-00175,EMP-0182,LR-032,Critical Thinking & Problem Solving,2025-05-16,74,4,3.8,3,Completed,Yes
-TRN-00176,EMP-0183,LR-038,Financial Modeling & Valuation,2025-06-15,67,10,3.4,1,Completed,Yes
-TRN-00177,EMP-0191,LR-039,HR Management Best Practices,2025-04-22,63,8,3.3,1,Completed,Yes
-TRN-00178,EMP-0194,LR-021,Terraform Infrastructure as Code,2025-03-23,61,8,3.2,1,Completed,Yes
-TRN-00179,EMP-0196,LR-034,Emotional Intelligence at Work,2025-11-08,58,4,3.2,1,Completed,Yes
-TRN-00180,EMP-0197,LR-001,Python for Beginners,2023-05-21,82,10,4.1,1,Completed,Yes
-TRN-00181,EMP-0197,LR-011,Next.js Full-Stack Development,2023-10-08,94,14,4.5,2,Completed,Yes
-TRN-00182,EMP-0198,LR-038,Financial Modeling & Valuation,2025-02-25,81,10,3.8,1,Completed,Yes
+TRN-00001,EMP0003,LR-030,Budget & Vendor Management,2025-02-19,71,6,3.6,1,Completed,Yes
+TRN-00002,EMP0005,LR-007,Feature Engineering for ML,2025-07-17,57,8,3.2,1,Completed,Yes
+TRN-00003,EMP0010,LR-007,Feature Engineering for ML,2024-05-01,85,8,4.3,1,Completed,Yes
+TRN-00004,EMP0012,LR-032,Critical Thinking & Problem Solving,2025-07-15,91,4,4.4,1,Completed,Yes
+TRN-00005,EMP0013,LR-005,Machine Learning A-Z,2024-11-06,59,20,3.3,1,Completed,Yes
+TRN-00006,EMP0013,LR-020,Cloud Architecture Design,2024-12-04,73,14,3.8,2,Completed,Yes
+TRN-00007,EMP0013,LR-024,Leadership Essentials,2025-11-15,70,6,3.7,3,Completed,Yes
+TRN-00008,EMP0013,LR-016,Docker & Kubernetes Essentials,2024-03-29,79,14,4.0,4,Completed,Yes
+TRN-00009,EMP0014,LR-011,Next.js Full-Stack Development,2025-07-24,66,14,3.6,1,Completed,Yes
+TRN-00010,EMP0017,LR-037,Financial Analysis Basics,2025-06-21,78,6,4.0,1,Completed,Yes
+TRN-00011,EMP0018,LR-025,Agile & Scrum Certification,2025-04-03,56,16,3.2,1,Completed,Yes
+TRN-00012,EMP0021,LR-004,Advanced SQL & PostgreSQL,2023-04-06,79,8,4.2,1,Completed,Yes
+TRN-00013,EMP0021,LR-019,AWS Cloud Practitioner,2025-01-30,92,16,4.6,2,Completed,Yes
+TRN-00014,EMP0023,LR-005,Machine Learning A-Z,2024-08-24,63,20,3.3,1,Completed,Yes
+TRN-00015,EMP0023,LR-022,Software Testing Fundamentals,2023-10-23,86,8,4.1,2,Completed,Yes
+TRN-00016,EMP0024,LR-010,React & TypeScript Bootcamp,2025-07-09,77,16,4.0,1,Completed,Yes
+TRN-00017,EMP0027,LR-026,Project Management Professional,2025-08-06,73,40,3.5,1,Completed,Yes
+TRN-00018,EMP0027,LR-021,Terraform Infrastructure as Code,2025-11-18,60,8,3.0,2,Completed,Yes
+TRN-00019,EMP0028,LR-033,Negotiation & Conflict Resolution,2025-02-28,50,4,2.9,1,Completed,No
+TRN-00020,EMP0029,LR-029,Operations & Production Management,2024-06-08,63,10,3.3,1,Completed,Yes
+TRN-00021,EMP0029,LR-038,Financial Modeling & Valuation,2025-04-25,48,10,2.8,2,Completed,No
+TRN-00022,EMP0029,LR-002,Python for Data Science,2025-04-02,68,12,3.5,3,Completed,Yes
+TRN-00023,EMP0029,LR-027,Strategic Planning & Execution,2024-12-19,69,8,3.5,4,Completed,Yes
+TRN-00024,EMP0030,LR-019,AWS Cloud Practitioner,2025-07-22,50,16,3.0,1,Completed,No
+TRN-00025,EMP0031,LR-030,Budget & Vendor Management,2025-04-09,81,6,4.0,1,Completed,Yes
+TRN-00026,EMP0031,LR-020,Cloud Architecture Design,2023-12-01,80,14,4.0,2,Completed,Yes
+TRN-00027,EMP0031,LR-007,Feature Engineering for ML,2023-08-06,92,8,4.4,3,Completed,Yes
+TRN-00028,EMP0034,LR-036,SEO & Content Marketing,2025-06-21,73,6,3.5,1,Completed,Yes
+TRN-00029,EMP0034,LR-035,Digital Marketing Fundamentals,2025-11-09,49,8,2.6,2,Completed,No
+TRN-00030,EMP0035,LR-031,Communication & Presentation Skills,2025-03-10,64,4,3.5,1,Completed,Yes
+TRN-00031,EMP0038,LR-004,Advanced SQL & PostgreSQL,2025-10-22,79,8,4.1,1,Completed,Yes
+TRN-00032,EMP0038,LR-026,Project Management Professional,2025-09-29,75,40,4.0,2,Completed,Yes
+TRN-00033,EMP0044,LR-012,Node.js & Express.js Deep Dive,2025-05-30,81,12,4.0,1,Completed,Yes
+TRN-00034,EMP0044,LR-011,Next.js Full-Stack Development,2024-07-19,70,14,3.6,2,Completed,Yes
+TRN-00035,EMP0048,LR-039,HR Management Best Practices,2025-01-16,58,8,3.3,1,Completed,Yes
+TRN-00036,EMP0048,LR-003,SQL Masterclass,2025-07-15,68,10,3.7,2,Completed,Yes
+TRN-00037,EMP0048,LR-027,Strategic Planning & Execution,2025-02-12,53,8,3.2,3,Completed,Yes
+TRN-00038,EMP0050,LR-034,Emotional Intelligence at Work,2025-09-24,63,4,3.4,1,Completed,Yes
+TRN-00039,EMP0050,LR-038,Financial Modeling & Valuation,2025-11-08,56,10,3.1,2,Completed,Yes
+TRN-00040,EMP0054,LR-026,Project Management Professional,2025-02-11,71,40,3.6,1,Completed,Yes
+TRN-00041,EMP0057,LR-024,Leadership Essentials,2025-11-15,57,6,3.1,1,Completed,Yes
+TRN-00042,EMP0057,LR-008,MLOps: Model Deployment,2025-06-18,44,12,2.6,2,Completed,No
+TRN-00043,EMP0058,LR-005,Machine Learning A-Z,2024-10-30,63,20,3.5,1,Completed,Yes
+TRN-00044,EMP0058,LR-025,Agile & Scrum Certification,2025-02-23,66,16,3.6,2,Completed,Yes
+TRN-00045,EMP0058,LR-013,REST API Design & GraphQL,2024-09-05,66,10,3.6,3,Completed,Yes
+TRN-00046,EMP0059,LR-022,Software Testing Fundamentals,2025-11-08,84,8,4.2,1,Completed,Yes
+TRN-00047,EMP0059,LR-028,Risk Management Fundamentals,2023-10-31,79,6,4.1,2,Completed,Yes
+TRN-00048,EMP0059,LR-038,Financial Modeling & Valuation,2023-11-02,81,10,4.1,3,Completed,Yes
+TRN-00049,EMP0064,LR-025,Agile & Scrum Certification,2024-12-31,55,16,3.1,1,Completed,Yes
+TRN-00050,EMP0064,LR-039,HR Management Best Practices,2024-05-11,47,8,2.8,2,Completed,No
+TRN-00051,EMP0064,LR-035,Digital Marketing Fundamentals,2024-02-18,63,8,3.3,3,Completed,Yes
+TRN-00052,EMP0064,LR-036,SEO & Content Marketing,2025-02-25,64,6,3.4,4,Completed,Yes
+TRN-00053,EMP0065,LR-009,Statistics for Data Science,2024-06-01,67,8,3.4,1,Completed,Yes
+TRN-00054,EMP0067,LR-024,Leadership Essentials,2025-06-16,98,6,4.7,1,Completed,Yes
+TRN-00055,EMP0069,LR-006,Deep Learning Specialization,2025-07-09,58,30,3.3,1,Completed,Yes
+TRN-00056,EMP0069,LR-040,Sales Mastery & CRM Tools,2025-07-07,68,10,3.7,2,Completed,Yes
+TRN-00057,EMP0069,LR-025,Agile & Scrum Certification,2025-03-19,66,16,3.6,3,Completed,Yes
+TRN-00058,EMP0071,LR-005,Machine Learning A-Z,2024-10-12,71,20,3.7,1,Completed,Yes
+TRN-00059,EMP0073,LR-005,Machine Learning A-Z,2023-12-18,67,20,3.6,1,Completed,Yes
+TRN-00060,EMP0073,LR-014,System Design for Engineers,2025-10-16,72,16,3.8,2,Completed,Yes
+TRN-00061,EMP0073,LR-033,Negotiation & Conflict Resolution,2024-12-01,76,4,3.9,3,Completed,Yes
+TRN-00062,EMP0073,LR-020,Cloud Architecture Design,2025-11-22,76,14,3.9,4,Completed,Yes
+TRN-00063,EMP0073,LR-034,Emotional Intelligence at Work,2025-04-17,67,4,3.6,5,Completed,Yes
+TRN-00064,EMP0076,LR-001,Python for Beginners,2024-07-25,60,10,3.3,1,Completed,Yes
+TRN-00065,EMP0076,LR-033,Negotiation & Conflict Resolution,2025-07-08,58,4,3.2,2,Completed,Yes
+TRN-00066,EMP0076,LR-010,React & TypeScript Bootcamp,2024-08-11,50,16,2.9,3,Completed,No
+TRN-00067,EMP0077,LR-009,Statistics for Data Science,2024-09-22,78,8,3.7,1,Completed,Yes
+TRN-00068,EMP0083,LR-024,Leadership Essentials,2025-06-29,73,6,3.7,1,Completed,Yes
+TRN-00069,EMP0084,LR-024,Leadership Essentials,2025-11-30,77,6,4.0,1,Completed,Yes
+TRN-00070,EMP0084,LR-014,System Design for Engineers,2024-12-02,82,16,4.2,2,Completed,Yes
+TRN-00071,EMP0085,LR-033,Negotiation & Conflict Resolution,2024-12-19,80,4,3.9,1,Completed,Yes
+TRN-00072,EMP0087,LR-027,Strategic Planning & Execution,2025-04-05,70,8,3.5,1,Completed,Yes
+TRN-00073,EMP0091,LR-020,Cloud Architecture Design,2025-07-30,70,14,3.4,1,Completed,Yes
+TRN-00074,EMP0093,LR-033,Negotiation & Conflict Resolution,2025-10-03,79,4,3.9,1,Completed,Yes
+TRN-00075,EMP0093,LR-019,AWS Cloud Practitioner,2025-09-23,57,16,3.1,2,Completed,Yes
+TRN-00076,EMP0093,LR-038,Financial Modeling & Valuation,2025-06-02,71,10,3.6,3,Completed,Yes
+TRN-00077,EMP0093,LR-007,Feature Engineering for ML,2023-08-17,66,8,3.4,4,Completed,Yes
+TRN-00078,EMP0093,LR-029,Operations & Production Management,2024-08-11,54,10,3.0,5,Completed,Yes
+TRN-00079,EMP0093,LR-002,Python for Data Science,2024-10-10,51,12,2.9,6,Completed,Yes
+TRN-00080,EMP0093,LR-035,Digital Marketing Fundamentals,2024-07-14,77,8,3.8,7,Completed,Yes
+TRN-00081,EMP0094,LR-017,Kubernetes Advanced,2025-05-22,85,12,4.3,1,Completed,Yes
+TRN-00082,EMP0096,LR-026,Project Management Professional,2025-03-29,65,40,3.7,1,Completed,Yes
+TRN-00083,EMP0098,LR-040,Sales Mastery & CRM Tools,2025-02-18,74,10,3.6,1,Completed,Yes
+TRN-00084,EMP0099,LR-035,Digital Marketing Fundamentals,2025-03-11,66,8,3.5,1,Completed,Yes
+TRN-00085,EMP0100,LR-014,System Design for Engineers,2025-08-30,60,16,3.4,1,Completed,Yes
+TRN-00086,EMP0103,LR-024,Leadership Essentials,2024-11-14,82,6,4.2,1,Completed,Yes
+TRN-00087,EMP0103,LR-017,Kubernetes Advanced,2025-01-27,78,12,4.0,2,Completed,Yes
+TRN-00088,EMP0105,LR-005,Machine Learning A-Z,2025-09-21,92,20,4.4,1,Completed,Yes
+TRN-00089,EMP0106,LR-025,Agile & Scrum Certification,2025-12-02,61,16,3.4,1,Completed,Yes
+TRN-00090,EMP0106,LR-011,Next.js Full-Stack Development,2025-10-16,52,14,3.1,2,Completed,Yes
+TRN-00091,EMP0107,LR-034,Emotional Intelligence at Work,2024-12-16,71,4,3.8,1,Completed,Yes
+TRN-00092,EMP0107,LR-037,Financial Analysis Basics,2025-09-29,84,6,4.3,2,Completed,Yes
+TRN-00093,EMP0110,LR-009,Statistics for Data Science,2023-11-08,77,8,3.6,1,Completed,Yes
+TRN-00094,EMP0116,LR-030,Budget & Vendor Management,2025-05-24,79,6,4.0,1,Completed,Yes
+TRN-00095,EMP0116,LR-025,Agile & Scrum Certification,2024-04-26,60,16,3.3,2,Completed,Yes
+TRN-00096,EMP0116,LR-012,Node.js & Express.js Deep Dive,2025-08-31,56,12,3.2,3,Completed,Yes
+TRN-00097,EMP0116,LR-017,Kubernetes Advanced,2025-06-22,70,12,3.7,4,Completed,Yes
+TRN-00098,EMP0116,LR-033,Negotiation & Conflict Resolution,2025-05-21,68,4,3.6,5,Completed,Yes
+TRN-00099,EMP0116,LR-015,Microservices Architecture,2024-08-04,73,14,3.8,6,Completed,Yes
+TRN-00100,EMP0117,LR-005,Machine Learning A-Z,2025-01-31,92,20,4.2,1,Completed,Yes
+TRN-00101,EMP0120,LR-021,Terraform Infrastructure as Code,2023-11-10,69,8,3.7,1,Completed,Yes
+TRN-00102,EMP0120,LR-004,Advanced SQL & PostgreSQL,2025-04-25,74,8,3.9,2,Completed,Yes
+TRN-00103,EMP0122,LR-001,Python for Beginners,2024-03-31,79,10,4.1,1,Completed,Yes
+TRN-00104,EMP0122,LR-017,Kubernetes Advanced,2025-10-31,77,12,4.1,2,Completed,Yes
+TRN-00105,EMP0122,LR-011,Next.js Full-Stack Development,2025-01-23,74,14,4.0,3,Completed,Yes
+TRN-00106,EMP0123,LR-003,SQL Masterclass,2025-01-31,84,10,4.2,1,Completed,Yes
+TRN-00107,EMP0123,LR-007,Feature Engineering for ML,2025-01-31,71,8,3.7,2,Completed,Yes
+TRN-00108,EMP0130,LR-006,Deep Learning Specialization,2025-08-31,67,30,3.6,1,Completed,Yes
+TRN-00109,EMP0130,LR-032,Critical Thinking & Problem Solving,2025-06-18,65,4,3.5,2,Completed,Yes
+TRN-00110,EMP0131,LR-011,Next.js Full-Stack Development,2025-10-23,68,14,3.6,1,Completed,Yes
+TRN-00111,EMP0131,LR-007,Feature Engineering for ML,2024-06-03,58,8,3.3,2,Completed,Yes
+TRN-00112,EMP0131,LR-033,Negotiation & Conflict Resolution,2024-01-16,86,4,4.2,3,Completed,Yes
+TRN-00113,EMP0131,LR-010,React & TypeScript Bootcamp,2025-08-28,69,16,3.6,4,Completed,Yes
+TRN-00114,EMP0131,LR-017,Kubernetes Advanced,2025-09-16,71,12,3.7,5,Completed,Yes
+TRN-00115,EMP0134,LR-026,Project Management Professional,2024-11-25,58,40,2.9,1,Completed,Yes
+TRN-00116,EMP0134,LR-010,React & TypeScript Bootcamp,2025-07-01,54,16,2.7,2,Completed,Yes
+TRN-00117,EMP0134,LR-029,Operations & Production Management,2025-04-11,65,10,3.1,3,Completed,Yes
+TRN-00118,EMP0137,LR-038,Financial Modeling & Valuation,2025-05-16,67,10,3.5,1,Completed,Yes
+TRN-00119,EMP0137,LR-029,Operations & Production Management,2025-11-27,78,10,3.9,2,Completed,Yes
+TRN-00120,EMP0138,LR-022,Software Testing Fundamentals,2024-05-02,59,8,3.3,1,Completed,Yes
+TRN-00121,EMP0138,LR-021,Terraform Infrastructure as Code,2025-11-07,54,8,3.2,2,Completed,Yes
+TRN-00122,EMP0138,LR-038,Financial Modeling & Valuation,2024-06-08,64,10,3.5,3,Completed,Yes
+TRN-00123,EMP0139,LR-014,System Design for Engineers,2024-10-30,71,16,3.5,1,Completed,Yes
+TRN-00124,EMP0139,LR-019,AWS Cloud Practitioner,2025-11-11,71,16,3.5,2,Completed,Yes
+TRN-00125,EMP0139,LR-011,Next.js Full-Stack Development,2025-02-08,59,14,3.1,3,Completed,Yes
+TRN-00126,EMP0139,LR-004,Advanced SQL & PostgreSQL,2025-10-11,59,8,3.1,4,Completed,Yes
+TRN-00127,EMP0140,LR-037,Financial Analysis Basics,2025-08-09,66,6,3.5,1,Completed,Yes
+TRN-00128,EMP0140,LR-027,Strategic Planning & Execution,2025-06-11,84,8,4.1,2,Completed,Yes
+TRN-00129,EMP0141,LR-021,Terraform Infrastructure as Code,2025-02-17,50,8,3.0,1,Completed,No
+TRN-00130,EMP0142,LR-035,Digital Marketing Fundamentals,2025-05-04,74,8,3.8,1,Completed,Yes
+TRN-00131,EMP0143,LR-006,Deep Learning Specialization,2025-05-23,53,30,2.7,1,Completed,Yes
+TRN-00132,EMP0143,LR-033,Negotiation & Conflict Resolution,2025-11-22,60,4,3.0,2,Completed,Yes
+TRN-00133,EMP0144,LR-034,Emotional Intelligence at Work,2025-02-13,65,4,3.4,1,Completed,Yes
+TRN-00134,EMP0144,LR-026,Project Management Professional,2025-07-30,65,40,3.4,2,Completed,Yes
+TRN-00135,EMP0144,LR-030,Budget & Vendor Management,2025-04-12,72,6,3.6,3,Completed,Yes
+TRN-00136,EMP0144,LR-003,SQL Masterclass,2025-06-28,62,10,3.3,4,Completed,Yes
+TRN-00137,EMP0145,LR-012,Node.js & Express.js Deep Dive,2024-08-10,64,12,3.5,1,Completed,Yes
+TRN-00138,EMP0150,LR-012,Node.js & Express.js Deep Dive,2024-11-14,63,12,3.5,1,Completed,Yes
+TRN-00139,EMP0150,LR-027,Strategic Planning & Execution,2025-11-16,70,8,3.7,2,Completed,Yes
+TRN-00140,EMP0150,LR-004,Advanced SQL & PostgreSQL,2024-09-27,68,8,3.6,3,Completed,Yes
+TRN-00141,EMP0150,LR-002,Python for Data Science,2024-06-20,75,12,3.9,4,Completed,Yes
+TRN-00142,EMP0150,LR-001,Python for Beginners,2024-03-09,72,10,3.8,5,Completed,Yes
+TRN-00143,EMP0154,LR-037,Financial Analysis Basics,2025-09-11,52,6,2.6,1,Completed,Yes
+TRN-00144,EMP0156,LR-040,Sales Mastery & CRM Tools,2025-03-08,53,10,3.0,1,Completed,Yes
+TRN-00145,EMP0156,LR-031,Communication & Presentation Skills,2025-11-09,70,4,3.6,2,Completed,Yes
+TRN-00146,EMP0157,LR-016,Docker & Kubernetes Essentials,2024-12-03,55,14,3.1,1,Completed,Yes
+TRN-00147,EMP0158,LR-016,Docker & Kubernetes Essentials,2025-09-15,58,14,3.0,1,Completed,Yes
+TRN-00148,EMP0158,LR-002,Python for Data Science,2025-11-14,42,12,2.4,2,Completed,No
+TRN-00149,EMP0159,LR-037,Financial Analysis Basics,2025-07-30,65,6,3.6,1,Completed,Yes
+TRN-00150,EMP0161,LR-026,Project Management Professional,2024-11-12,78,40,4.0,1,Completed,Yes
+TRN-00151,EMP0163,LR-011,Next.js Full-Stack Development,2024-06-03,98,14,4.8,1,Completed,Yes
+TRN-00152,EMP0164,LR-003,SQL Masterclass,2025-04-27,81,10,3.8,1,Completed,Yes
+TRN-00153,EMP0165,LR-004,Advanced SQL & PostgreSQL,2025-03-20,66,8,3.3,1,Completed,Yes
+TRN-00154,EMP0165,LR-012,Node.js & Express.js Deep Dive,2024-11-15,74,12,3.6,2,Completed,Yes
+TRN-00155,EMP0166,LR-005,Machine Learning A-Z,2025-01-26,80,20,4.1,1,Completed,Yes
+TRN-00156,EMP0168,LR-025,Agile & Scrum Certification,2024-11-17,65,16,3.1,1,Completed,Yes
+TRN-00157,EMP0170,LR-032,Critical Thinking & Problem Solving,2024-07-15,68,4,3.5,1,Completed,Yes
+TRN-00158,EMP0170,LR-040,Sales Mastery & CRM Tools,2024-08-07,69,10,3.5,2,Completed,Yes
+TRN-00159,EMP0171,LR-036,SEO & Content Marketing,2025-03-24,76,6,3.8,1,Completed,Yes
+TRN-00160,EMP0171,LR-010,React & TypeScript Bootcamp,2024-07-08,62,16,3.4,2,Completed,Yes
+TRN-00161,EMP0171,LR-035,Digital Marketing Fundamentals,2024-12-20,70,8,3.6,3,Completed,Yes
+TRN-00162,EMP0171,LR-002,Python for Data Science,2024-06-14,68,12,3.6,4,Completed,Yes
+TRN-00163,EMP0172,LR-034,Emotional Intelligence at Work,2025-02-01,80,4,4.0,1,Completed,Yes
+TRN-00164,EMP0172,LR-001,Python for Beginners,2025-11-10,87,10,4.3,2,Completed,Yes
+TRN-00165,EMP0173,LR-040,Sales Mastery & CRM Tools,2024-05-22,64,10,3.4,1,Completed,Yes
+TRN-00166,EMP0174,LR-020,Cloud Architecture Design,2024-11-04,95,14,4.7,1,Completed,Yes
+TRN-00167,EMP0174,LR-022,Software Testing Fundamentals,2025-04-14,78,8,4.1,2,Completed,Yes
+TRN-00168,EMP0175,LR-012,Node.js & Express.js Deep Dive,2025-06-30,69,12,3.5,1,Completed,Yes
+TRN-00169,EMP0175,LR-007,Feature Engineering for ML,2024-06-03,64,8,3.3,2,Completed,Yes
+TRN-00170,EMP0175,LR-008,MLOps: Model Deployment,2024-08-03,48,12,2.8,3,Completed,No
+TRN-00171,EMP0179,LR-014,System Design for Engineers,2024-09-13,89,16,4.4,1,Completed,Yes
+TRN-00172,EMP0181,LR-009,Statistics for Data Science,2025-10-10,64,8,3.0,1,Completed,Yes
+TRN-00173,EMP0182,LR-018,CI/CD with GitHub Actions,2025-11-14,59,10,3.3,1,Completed,Yes
+TRN-00174,EMP0182,LR-003,SQL Masterclass,2025-03-01,68,10,3.6,2,Completed,Yes
+TRN-00175,EMP0182,LR-032,Critical Thinking & Problem Solving,2025-05-16,74,4,3.8,3,Completed,Yes
+TRN-00176,EMP0183,LR-038,Financial Modeling & Valuation,2025-06-15,67,10,3.4,1,Completed,Yes
+TRN-00177,EMP0191,LR-039,HR Management Best Practices,2025-04-22,63,8,3.3,1,Completed,Yes
+TRN-00178,EMP0194,LR-021,Terraform Infrastructure as Code,2025-03-23,61,8,3.2,1,Completed,Yes
+TRN-00179,EMP0196,LR-034,Emotional Intelligence at Work,2025-11-08,58,4,3.2,1,Completed,Yes
+TRN-00180,EMP0197,LR-001,Python for Beginners,2023-05-21,82,10,4.1,1,Completed,Yes
+TRN-00181,EMP0197,LR-011,Next.js Full-Stack Development,2023-10-08,94,14,4.5,2,Completed,Yes
+TRN-00182,EMP0198,LR-038,Financial Modeling & Valuation,2025-02-25,81,10,3.8,1,Completed,Yes

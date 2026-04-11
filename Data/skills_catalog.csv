@@ -1,4 +1,4 @@
-skill_id,skill_name,category,complexity
+skill_id,skill_name,category,complexity_level
 SK001,Python,Programming Languages,3
 SK002,JavaScript,Programming Languages,5
 SK003,TypeScript,Programming Languages,4
@@ -72,7 +72,6 @@ SK070,Integration Testing,Security & Testing,5
 SK071,OWASP,Security & Testing,4
 SK072,Encryption,Security & Testing,2
 SK073,Identity Management,Security & Testing,1
-skill_id,skill_name,domain,complexity_level
 SK-101,Python,Technical,1
 SK-102,NumPy,Technical,2
 SK-103,Pandas,Technical,2

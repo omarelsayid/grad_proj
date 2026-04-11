@@ -1,37 +1,37 @@
 resource_id,title,type,duration_hours,priority,target_skill_id,provider,category,skill_level
-LR-001,Python for Beginners,Course,10,High,SK-101,edX,Data Science,Beginner
-LR-002,Python for Data Science,Course,12,High,SK-103,Coursera,Data Science,Intermediate
-LR-003,SQL Masterclass,Course,10,High,SK-116,edX,Data Engineering,Beginner
-LR-004,Advanced SQL & PostgreSQL,Course,8,Medium,SK-117,Udemy,Data Engineering,Intermediate
-LR-005,Machine Learning A-Z,Course,20,High,SK-110,Coursera,Data Science,Intermediate
-LR-006,Deep Learning Specialization,Course,30,Medium,SK-108,Coursera,Data Science,Advanced
+LR-001,Python for Beginners,Course,10,High,SK001,edX,Data Science,Beginner
+LR-002,Python for Data Science,Course,12,High,SK027,Coursera,Data Science,Intermediate
+LR-003,SQL Masterclass,Course,10,High,SK021,edX,Data Engineering,Beginner
+LR-004,Advanced SQL & PostgreSQL,Course,8,Medium,SK060,Udemy,Data Engineering,Intermediate
+LR-005,Machine Learning A-Z,Course,20,High,SK025,Coursera,Data Science,Intermediate
+LR-006,Deep Learning Specialization,Course,30,Medium,SK026,Coursera,Data Science,Advanced
 LR-007,Feature Engineering for ML,Course,8,Medium,SK-113,Udemy,Data Science,Advanced
 LR-008,MLOps: Model Deployment,Course,12,Low,SK-114,edX,Data Science,Advanced
-LR-009,Statistics for Data Science,Course,8,Medium,SK-109,edX,Data Science,Beginner
-LR-010,React & TypeScript Bootcamp,Course,16,High,SK-126,Udemy,IT,Intermediate
-LR-011,Next.js Full-Stack Development,Course,14,Medium,SK-127,Udemy,IT,Advanced
+LR-009,Statistics for Data Science,Course,8,Medium,SK024,edX,Data Science,Beginner
+LR-010,React & TypeScript Bootcamp,Course,16,High,SK012,Udemy,IT,Intermediate
+LR-011,Next.js Full-Stack Development,Course,14,Medium,SK015,Udemy,IT,Advanced
 LR-012,Node.js & Express.js Deep Dive,Course,12,High,SK-131,Udemy,IT,Intermediate
 LR-013,REST API Design & GraphQL,Course,10,Medium,SK-133,Coursera,IT,Advanced
 LR-014,System Design for Engineers,Course,16,Medium,SK-137,edX,Engineering,Advanced
 LR-015,Microservices Architecture,Course,14,Low,SK-136,Coursera,Engineering,Advanced
-LR-016,Docker & Kubernetes Essentials,Course,14,Medium,SK-141,Coursera,IT,Intermediate
-LR-017,Kubernetes Advanced,Course,12,Low,SK-142,edX,IT,Advanced
-LR-018,CI/CD with GitHub Actions,Course,10,Medium,SK-143,Udemy,IT,Intermediate
-LR-019,AWS Cloud Practitioner,Certification,16,High,SK-145,AWS,IT,Beginner
+LR-016,Docker & Kubernetes Essentials,Course,14,Medium,SK034,Coursera,IT,Intermediate
+LR-017,Kubernetes Advanced,Course,12,Low,SK035,edX,IT,Advanced
+LR-018,CI/CD with GitHub Actions,Course,10,Medium,SK036,Udemy,IT,Intermediate
+LR-019,AWS Cloud Practitioner,Certification,16,High,SK031,AWS,IT,Beginner
 LR-020,Cloud Architecture Design,Course,14,Medium,SK-147,Coursera,IT,Advanced
-LR-021,Terraform Infrastructure as Code,Course,8,Low,SK-144,Udemy,IT,Advanced
-LR-022,Software Testing Fundamentals,Course,8,Medium,SK-148,edX,IT,Beginner
+LR-021,Terraform Infrastructure as Code,Course,8,Low,SK037,Udemy,IT,Advanced
+LR-022,Software Testing Fundamentals,Course,8,Medium,SK069,edX,IT,Beginner
 LR-023,Test Automation with Selenium,Course,10,Medium,SK-150,Udemy,IT,Intermediate
-LR-024,Leadership Essentials,Course,6,High,SK-161,Coursera,Management,Beginner
+LR-024,Leadership Essentials,Course,6,High,SK042,Coursera,Management,Beginner
 LR-025,Agile & Scrum Certification,Certification,16,High,SK-165,Scrum.org,Management,Intermediate
-LR-026,Project Management Professional,Certification,40,Medium,SK-164,PMI,Management,Advanced
+LR-026,Project Management Professional,Certification,40,Medium,SK044,PMI,Management,Advanced
 LR-027,Strategic Planning & Execution,Course,8,Low,SK-170,Coursera,Management,Advanced
 LR-028,Risk Management Fundamentals,Course,6,Low,SK-171,edX,Management,Advanced
 LR-029,Operations & Production Management,Course,10,Medium,SK-169,Coursera,Management,Advanced
 LR-030,Budget & Vendor Management,Course,6,Medium,SK-173,Udemy,Management,Intermediate
-LR-031,Communication & Presentation Skills,Workshop,4,High,SK-151,Internal,Problem Solving,Beginner
-LR-032,Critical Thinking & Problem Solving,Workshop,4,High,SK-153,Internal,Problem Solving,Intermediate
-LR-033,Negotiation & Conflict Resolution,Workshop,4,Medium,SK-157,Coursera,Problem Solving,Intermediate
+LR-031,Communication & Presentation Skills,Workshop,4,High,SK041,Internal,Problem Solving,Beginner
+LR-032,Critical Thinking & Problem Solving,Workshop,4,High,SK043,Internal,Problem Solving,Intermediate
+LR-033,Negotiation & Conflict Resolution,Workshop,4,Medium,SK048,Coursera,Problem Solving,Intermediate
 LR-034,Emotional Intelligence at Work,Course,4,Medium,SK-160,Coursera,Problem Solving,Intermediate
 LR-035,Digital Marketing Fundamentals,Course,8,High,SK-175,Google,Marketing,Beginner
 LR-036,SEO & Content Marketing,Course,6,Medium,SK-176,Udemy,Marketing,Intermediate
