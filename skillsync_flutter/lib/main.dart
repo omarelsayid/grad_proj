@@ -9,13 +9,19 @@ void main() {
   runApp(const ProviderScope(child: SkillSyncApp()));
 }
 
-class SkillSyncApp extends ConsumerWidget {
+class SkillSyncApp extends ConsumerStatefulWidget {
   const SkillSyncApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SkillSyncApp> createState() => _SkillSyncAppState();
+}
+
+class _SkillSyncAppState extends ConsumerState<SkillSyncApp> {
+  late final _router = buildRouter();
+
+  @override
+  Widget build(BuildContext context) {
     final isDark = ref.watch(darkModeProvider);
-    final router = buildRouter();
 
     return MaterialApp.router(
       title: 'SkillSync HRMS',
@@ -23,7 +29,7 @@ class SkillSyncApp extends ConsumerWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
-      routerConfig: router,
+      routerConfig: _router,
     );
   }
 }
