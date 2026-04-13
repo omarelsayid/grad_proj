@@ -15,7 +15,8 @@
       "Bash(python -m pip install joblib==1.4.2 --no-deps)",
       "Bash(python -c \"from app.main import app; print\\('imports ok'\\)\")",
       "Bash(flutter --version)",
-      "Bash(python -m pytest tests/ --collect-only -q)"
+      "Bash(python -m pytest tests/ --collect-only -q)",
+      "Bash(python -c ':*)"
     ]
   }
 }

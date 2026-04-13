@@ -283,14 +283,15 @@ print("\nHyperparameter tuning with Optuna (50 trials)...")
 
 def m4_objective(trial):
     params = {
-        "n_estimators":       trial.suggest_int("n_estimators", 100, 500),
-        "learning_rate":      trial.suggest_float("learning_rate", 0.01, 0.15, log=True),
-        "num_leaves":         trial.suggest_int("num_leaves", 8, 60),
-        "min_child_samples":  trial.suggest_int("min_child_samples", 3, 30),
+        "n_estimators":       trial.suggest_int("n_estimators", 200, 1000),   # more trees
+        "learning_rate":      trial.suggest_float("learning_rate", 0.01, 0.30, log=True),  # wider range
+        "num_leaves":         trial.suggest_int("num_leaves", 31, 255),        # much more capacity
+        "max_depth":          trial.suggest_int("max_depth", 4, 12),           # explicit depth control
+        "min_child_samples":  trial.suggest_int("min_child_samples", 1, 20),   # allow smaller leaves
         "subsample":          trial.suggest_float("subsample", 0.6, 1.0),
         "colsample_bytree":   trial.suggest_float("colsample_bytree", 0.6, 1.0),
-        "reg_alpha":          trial.suggest_float("reg_alpha", 1e-8, 5.0, log=True),
-        "reg_lambda":         trial.suggest_float("reg_lambda", 1e-8, 5.0, log=True),
+        "reg_alpha":          trial.suggest_float("reg_alpha", 1e-8, 1.0, log=True),   # less aggressive L1
+        "reg_lambda":         trial.suggest_float("reg_lambda", 1e-8, 1.0, log=True),  # less aggressive L2
         "random_state": 42, "verbose": -1,
     }
     scores = cross_val_score(
@@ -301,7 +302,7 @@ def m4_objective(trial):
 
 
 study = optuna.create_study(direction="minimize", sampler=TPESampler(seed=42))
-study.optimize(m4_objective, n_trials=50)
+study.optimize(m4_objective, n_trials=80)  # more trials for the wider search space
 print(f"Best CV RMSE: {study.best_value:.4f}")
 print(f"Best params:  {study.best_params}")
 
@@ -316,7 +317,7 @@ final_model = lgb.LGBMRegressor(
 final_model.fit(
     X_tr, y_tr.to_numpy(),
     eval_set=[(X_te, y_te.to_numpy())],
-    callbacks=[lgb.early_stopping(20, verbose=False)],
+    callbacks=[lgb.early_stopping(50, verbose=False)],  # more patience — was stopping too early
 )
 
 y_pred = final_model.predict(X_te)
