@@ -330,12 +330,29 @@ cv_scores = cross_val_score(
     X, y.to_numpy(), cv=5, scoring="neg_root_mean_squared_error",
 )
 
+train_pred  = final_model.predict(X_tr)
+train_rmse  = np.sqrt(mean_squared_error(y_tr, train_pred))
+train_r2    = r2_score(y_tr, train_pred)
+
 print(f"\nFinal Model Performance (LOO emp_avg_score — no leakage):")
 print(f"  RMSE:          {rmse:.4f}  (baseline std: {baseline_rmse:.4f})")
 print(f"  MAE:           {mae:.4f}")
 print(f"  R2:            {r2:.4f}")
 print(f"  5-Fold CV RMSE:{-cv_scores.mean():.4f} +/- {cv_scores.std():.4f}")
 print(f"  RMSE/baseline: {rmse/baseline_rmse:.3f} (< 1.0 = beats mean predictor)")
+
+# ── Overfitting diagnostics ───────────────────────────────────────────────────
+gap_rmse = train_rmse - rmse   # negative = train harder than test (unusual)
+gap_r2   = train_r2   - r2
+print("\n--- OVERFITTING DIAGNOSTICS ---")
+print(f"  Train RMSE: {train_rmse:.4f}  |  Test RMSE: {rmse:.4f}")
+print(f"  Train R²  : {train_r2:.4f}  |  Test R²  : {r2:.4f}")
+print(f"  Train-Test R² gap: {gap_r2:.4f}", end="  ")
+if gap_r2 > 0.10:
+    print("⚠  WARNING — gap > 0.10, model may be overfitting. "
+          "Try lower num_leaves, higher min_child_samples, or more reg_lambda.")
+else:
+    print("✓  OK — model generalises well.")
 
 # ─── Plots ────────────────────────────────────────────────────────────────────
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))

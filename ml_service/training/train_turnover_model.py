@@ -168,13 +168,16 @@ X = df_clean[feature_cols].values
 y = df_clean["turnover_label"].values
 print(f"Features: {len(feature_cols)}  |  Samples: {len(X)}")
 
-# FIX: train/test split on RAW data — SMOTE fires inside the pipeline
-X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+# 3-way split: 70% train / 15% val / 15% test
+# Val set is used for overfitting diagnostics; SMOTE fires inside Pipeline per fold
+X_tr, X_temp, y_tr, y_temp = train_test_split(X, y, test_size=0.30, random_state=42, stratify=y)
+X_val, X_te, y_val, y_te   = train_test_split(X_temp, y_temp, test_size=0.50, random_state=42, stratify=y_temp)
 
 scaler = StandardScaler()
-X_tr_s = scaler.fit_transform(X_tr)
+X_tr_s  = scaler.fit_transform(X_tr)
+X_val_s = scaler.transform(X_val)
 X_te_s  = scaler.transform(X_te)
-print(f"Train: {len(X_tr)}  Test: {len(X_te)}")
+print(f"Train: {len(X_tr)}  Val: {len(X_val)}  Test: {len(X_te)}")
 print("NOTE: SMOTE is applied inside each Pipeline — no pre-resampling.")
 
 # ============================================================================
@@ -348,6 +351,22 @@ best_probas = all_trained[best_name]["probas"]
 
 print(f"\nOverall Best: {best_name}")
 print(classification_report(y_te, best_preds, target_names=["No Turnover", "Turnover"]))
+
+# ── Overfitting diagnostics ───────────────────────────────────────────────────
+train_f1 = f1_score(y_tr,  best_pipe.predict(X_tr_s))
+val_f1   = f1_score(y_val, best_pipe.predict(X_val_s))
+test_f1  = f1_score(y_te,  best_preds)
+gap      = train_f1 - val_f1
+print("\n--- OVERFITTING DIAGNOSTICS ---")
+print(f"  Train F1 : {train_f1:.4f}")
+print(f"  Val   F1 : {val_f1:.4f}")
+print(f"  Test  F1 : {test_f1:.4f}")
+print(f"  Train-Val gap: {gap:.4f}", end="  ")
+if gap > 0.10:
+    print("⚠  WARNING — gap > 0.10, model may be overfitting. "
+          "Consider more regularization or less depth.")
+else:
+    print("✓  OK — model generalises well.")
 
 # ============================================================================
 # SECTION 7: PLOTS

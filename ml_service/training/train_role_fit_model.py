@@ -141,8 +141,10 @@ FEATURE_COLS = [
 X = df[FEATURE_COLS]
 y = df["readiness_score"]
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-print(f"\nTrain: {len(X_train)}  |  Test: {len(X_test)}")
+# 3-way split: 70% train / 15% val / 15% test
+X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.30, random_state=42)
+X_val,   X_test, y_val,   y_test = train_test_split(X_temp, y_temp, test_size=0.50, random_state=42)
+print(f"\nTrain: {len(X_train)}  |  Val: {len(X_val)}  |  Test: {len(X_test)}")
 
 # ─── Hyperparameter tuning (Optuna) ──────────────────────────────────────────
 
@@ -153,6 +155,10 @@ def objective(trial):
         "max_depth":         trial.suggest_int("max_depth", 2, 8),
         "min_samples_split": trial.suggest_int("min_samples_split", 2, 20),
         "subsample":         trial.suggest_float("subsample", 0.6, 1.0),
+        # Early stopping: halt if val loss doesn't improve for 10 rounds
+        "n_iter_no_change":  10,
+        "validation_fraction": 0.15,
+        "tol":               1e-4,
         "random_state":      42,
     }
     model = GradientBoostingRegressor(**params)
@@ -171,7 +177,13 @@ print(f"Best params: {study.best_params}")
 
 # ─── Train final model ────────────────────────────────────────────────────────
 
-final_model = GradientBoostingRegressor(**study.best_params, random_state=42)
+final_model = GradientBoostingRegressor(
+    **study.best_params,
+    n_iter_no_change=10,
+    validation_fraction=0.15,
+    tol=1e-4,
+    random_state=42,
+)
 final_model.fit(X_train, y_train)
 
 y_pred = final_model.predict(X_test)
@@ -183,10 +195,26 @@ print(f"\nFinal Model Performance:")
 print(f"  RMSE: {rmse:.4f}")
 print(f"  MAE:  {mae:.4f}")
 print(f"  R²:   {r2:.4f}")
+print(f"  Trees used (with early stopping): {final_model.n_estimators_}")
 
 # Cross-validation
 cv_r2 = cross_val_score(final_model, X, y, cv=5, scoring="r2")
 print(f"\n5-Fold CV R²: {cv_r2.mean():.4f} ± {cv_r2.std():.4f}")
+
+# ── Overfitting diagnostics ───────────────────────────────────────────────────
+train_r2 = r2_score(y_train, final_model.predict(X_train))
+val_r2   = r2_score(y_val,   final_model.predict(X_val))
+gap      = train_r2 - val_r2
+print("\n--- OVERFITTING DIAGNOSTICS ---")
+print(f"  Train R² : {train_r2:.4f}")
+print(f"  Val   R² : {val_r2:.4f}")
+print(f"  Test  R² : {r2:.4f}")
+print(f"  Train-Val gap: {gap:.4f}", end="  ")
+if gap > 0.10:
+    print("⚠  WARNING — gap > 0.10, model may be overfitting. "
+          "Increase min_samples_split or reduce max_depth.")
+else:
+    print("✓  OK — model generalises well.")
 
 # ─── Feature importance ───────────────────────────────────────────────────────
 
