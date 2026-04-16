@@ -2,8 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../domain/entities/employee.dart';
-import '../../auth/auth_provider.dart';
-import '../../../data/mock/mock_employees.dart';
+import '../../../services/auth_service.dart';
 
 class LoginForm extends ConsumerStatefulWidget {
   final void Function(Employee, String) onLogin;
@@ -38,14 +37,17 @@ class _LoginFormState extends ConsumerState<LoginForm> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _loading = true);
-    await Future.delayed(const Duration(milliseconds: 600));
-    final email = _emailCtrl.text.trim().toLowerCase();
     try {
-      final emp = mockEmployees.firstWhere(
-        (e) => e.email.toLowerCase() == email,
-        orElse: () => mockEmployees.first,
+      final result = await AuthService.instance.login(
+        _emailCtrl.text.trim(),
+        _passwordCtrl.text,
       );
-      widget.onLogin(emp, _selectedRole);
+      widget.onLogin(result.employee, result.role);
+    } on Exception catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
+      );
     } finally {
       if (mounted) setState(() => _loading = false);
     }
