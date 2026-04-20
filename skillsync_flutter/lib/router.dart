@@ -19,6 +19,7 @@ import 'presentation/employee/notifications/screen.dart';
 import 'presentation/employee/chat/screen.dart';
 // Manager screens
 import 'presentation/manager/dashboard/screen.dart';
+import 'presentation/manager/learning/screen.dart';
 import 'presentation/manager/team/screen.dart';
 import 'presentation/manager/departments/screen.dart';
 import 'presentation/manager/roles/screen.dart';
@@ -88,6 +89,7 @@ GoRouter buildRouter() => GoRouter(
         GoRoute(path: '/manager/attendance', builder: (_, __) => const ManagerAttendanceScreen()),
         GoRoute(path: '/manager/leaves', builder: (_, __) => const ManagerLeavesScreen()),
         GoRoute(path: '/manager/payroll', builder: (_, __) => const ManagerPayrollScreen()),
+        GoRoute(path: '/manager/learning', builder: (_, __) => const ManagerTeamLearningScreen()),
         GoRoute(path: '/manager/todos', builder: (_, __) => const ManagerTodosScreen()),
         GoRoute(path: '/manager/notifications', builder: (_, __) => const ManagerNotificationsScreen()),
         GoRoute(path: '/manager/chat', builder: (_, __) => const ManagerChatScreen()),
@@ -135,7 +137,7 @@ String _mgrTitle(String path) {
   final map = {
     'dashboard': 'Team Overview', 'team': 'My Team', 'departments': 'Team Departments',
     'roles': 'Open Roles', 'skills': 'Team Skills',
-    'replacements': 'Replacement Planning', 'attendance': 'Team Attendance',
+    'learning': 'Team Learning', 'replacements': 'Replacement Planning', 'attendance': 'Team Attendance',
     'leaves': 'Leave Requests', 'payroll': 'Team Payroll', 'todos': 'Tasks',
     'notifications': 'Notifications', 'chat': 'AI HR Chat',
   };

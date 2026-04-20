@@ -264,6 +264,36 @@ class ApiClient {
   Future<Map<String, dynamic>> getTurnoverPredictions(Map<String, dynamic> payload) async =>
       (await _request('POST', '/ml/turnover', body: payload)) as Map<String, dynamic>;
 
+  Future<Map<String, dynamic>> getMlTurnoverRisk(Map<String, dynamic> payload) async =>
+      (await _request('POST', '/ml/turnover', body: payload)) as Map<String, dynamic>;
+
+  Future<Map<String, dynamic>> getMlRoleFit(Map<String, dynamic> payload) async =>
+      (await _request('POST', '/ml/role-fit', body: payload)) as Map<String, dynamic>;
+
+  Future<Map<String, dynamic>> getMlSkillGaps() async =>
+      (await _request('GET', '/ml/skill-gaps')) as Map<String, dynamic>;
+
+  Future<Map<String, dynamic>> getMlLearningPath(Map<String, dynamic> payload) async =>
+      (await _request('POST', '/ml/learning-path', body: payload)) as Map<String, dynamic>;
+
+  // ── Roles mutations ───────────────────────────────────────────────────────────
+  Future<Map<String, dynamic>> createRole(Map<String, dynamic> data) async =>
+      (await _request('POST', '/roles', body: data)) as Map<String, dynamic>;
+
+  Future<Map<String, dynamic>> updateRole(String id, Map<String, dynamic> data) async =>
+      (await _request('PATCH', '/roles/$id', body: data)) as Map<String, dynamic>;
+
+  Future<void> deleteRole(String id) async => _request('DELETE', '/roles/$id');
+
+  // ── Skills mutations ──────────────────────────────────────────────────────────
+  Future<Map<String, dynamic>> createSkill(Map<String, dynamic> data) async =>
+      (await _request('POST', '/skills', body: data)) as Map<String, dynamic>;
+
+  Future<Map<String, dynamic>> updateSkill(String id, Map<String, dynamic> data) async =>
+      (await _request('PATCH', '/skills/$id', body: data)) as Map<String, dynamic>;
+
+  Future<void> deleteSkill(String id) async => _request('DELETE', '/skills/$id');
+
   // ── Audit ─────────────────────────────────────────────────────────────────────
   Future<List<dynamic>> getAuditLog({String? entityType}) async {
     final path = entityType != null ? '/audit?entityType=$entityType' : '/audit';

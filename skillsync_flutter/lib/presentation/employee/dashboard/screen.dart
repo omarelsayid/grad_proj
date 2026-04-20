@@ -22,8 +22,6 @@ class EmployeeDashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _EmployeeDashboardScreenState extends ConsumerState<EmployeeDashboardScreen> {
-  String? _selectedRoleId;
-
   @override
   Widget build(BuildContext context) {
     final employee = ref.watch(authProvider).currentUser;
@@ -55,7 +53,8 @@ class _EmployeeDashboardScreenState extends ConsumerState<EmployeeDashboardScree
                   ? 'Medium'
                   : 'Low';
 
-          final targetRole = _selectedRoleId != null ? roleMap[_selectedRoleId] : null;
+          final selectedRoleId = ref.watch(selectedTargetRoleProvider);
+          final targetRole = selectedRoleId != null ? roleMap[selectedRoleId] : null;
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
@@ -129,13 +128,13 @@ class _EmployeeDashboardScreenState extends ConsumerState<EmployeeDashboardScree
                 Text('Skill Gap Analysis', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                 DropdownButton<String>(
                   hint: const Text('Select target role', style: TextStyle(fontSize: 12)),
-                  value: _selectedRoleId,
+                  value: selectedRoleId,
                   isDense: true,
                   items: roles.map((r) => DropdownMenuItem(
                     value: r.id,
                     child: Text(r.title, style: const TextStyle(fontSize: 12)),
                   )).toList(),
-                  onChanged: (v) => setState(() => _selectedRoleId = v),
+                  onChanged: (v) => ref.read(selectedTargetRoleProvider.notifier).state = v,
                 ),
               ]),
               const SizedBox(height: 12),

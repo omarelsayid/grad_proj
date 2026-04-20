@@ -65,7 +65,7 @@ class _SummaryRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
+      color: Theme.of(context).colorScheme.surfaceVariant.withValues(alpha: 0.5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: summary.entries.map((e) => Column(

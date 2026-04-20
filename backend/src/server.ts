@@ -7,11 +7,6 @@ import { env } from './config/env';
 import { logger } from './config/logger';
 import { closeQueues } from './jobs/queue';
 
-// Import BullMQ workers (side-effect: starts workers if Redis is available)
-import './jobs/payrollWorker';
-import './jobs/notificationWorker';
-import { scheduleTurnoverCron } from './jobs/turnoverCacheWorker';
-
 const httpServer = createServer(app);
 
 // ── Socket.io — real-time notifications + chat ────────────────────────────────
@@ -39,9 +34,6 @@ app.set('io', io);
 // ── Startup ───────────────────────────────────────────────────────────────────
 async function start() {
   await connectDB();
-  await scheduleTurnoverCron().catch((err: Error) =>
-    logger.warn('Turnover cron could not be scheduled', { error: err.message }),
-  );
 
   httpServer.listen(env.PORT, () => {
     logger.info(`🚀  SkillSync API running on http://localhost:${env.PORT}`);

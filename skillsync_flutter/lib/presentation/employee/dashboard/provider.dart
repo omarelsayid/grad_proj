@@ -4,6 +4,9 @@ import '../../../domain/entities/skill.dart';
 import '../../../domain/entities/role.dart';
 import '../../auth/auth_provider.dart';
 
+// Shared selected target role — drives both Skill Gap panel and Learning page
+final selectedTargetRoleProvider = StateProvider<String?>((ref) => null);
+
 final employeeSkillsProvider = FutureProvider<List<Skill>>((ref) async {
   final repo = ref.read(skillRepositoryProvider);
   return repo.getAllSkills();

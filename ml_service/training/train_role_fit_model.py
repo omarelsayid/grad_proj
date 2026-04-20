@@ -22,7 +22,8 @@ from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import cross_val_score, train_test_split
 
-OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "app", "models")
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "app", "models")
+DATA_DIR   = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "Data")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 print("=" * 80)
@@ -32,8 +33,8 @@ print("=" * 80)
 
 # ─── Helpers ─────────────────────────────────────────────────────────────────
 
-def load_and_clean(filepath: str) -> pd.DataFrame:
-    df = pd.read_csv(filepath)
+def load_and_clean(filename: str) -> pd.DataFrame:
+    df = pd.read_csv(os.path.join(DATA_DIR, filename))
     df.columns = df.columns.str.replace(r"^\ufeff", "", regex=True).str.strip()
     return df
 
@@ -71,7 +72,7 @@ print(f"  job_requirements — role:{job_role_col}, skill:{job_sk_col}, "
 
 # ─── Build feature matrix ────────────────────────────────────────────────────
 
-print("\nBuilding (employee × role) feature matrix...")
+print("\nBuilding (employee x role) feature matrix...")
 
 employee_ids = employee_skills[emp_id_col].unique()
 role_ids     = job_requirements[job_role_col].unique()
@@ -194,27 +195,27 @@ r2   = r2_score(y_test, y_pred)
 print(f"\nFinal Model Performance:")
 print(f"  RMSE: {rmse:.4f}")
 print(f"  MAE:  {mae:.4f}")
-print(f"  R²:   {r2:.4f}")
+print(f"  R2:   {r2:.4f}")
 print(f"  Trees used (with early stopping): {final_model.n_estimators_}")
 
 # Cross-validation
 cv_r2 = cross_val_score(final_model, X, y, cv=5, scoring="r2")
-print(f"\n5-Fold CV R²: {cv_r2.mean():.4f} ± {cv_r2.std():.4f}")
+print(f"\n5-Fold CV R2: {cv_r2.mean():.4f} ± {cv_r2.std():.4f}")
 
 # ── Overfitting diagnostics ───────────────────────────────────────────────────
 train_r2 = r2_score(y_train, final_model.predict(X_train))
 val_r2   = r2_score(y_val,   final_model.predict(X_val))
 gap      = train_r2 - val_r2
 print("\n--- OVERFITTING DIAGNOSTICS ---")
-print(f"  Train R² : {train_r2:.4f}")
-print(f"  Val   R² : {val_r2:.4f}")
-print(f"  Test  R² : {r2:.4f}")
+print(f"  Train R2 : {train_r2:.4f}")
+print(f"  Val   R2 : {val_r2:.4f}")
+print(f"  Test  R2 : {r2:.4f}")
 print(f"  Train-Val gap: {gap:.4f}", end="  ")
 if gap > 0.10:
-    print("⚠  WARNING — gap > 0.10, model may be overfitting. "
+    print("WARNING  WARNING — gap > 0.10, model may be overfitting. "
           "Increase min_samples_split or reduce max_depth.")
 else:
-    print("✓  OK — model generalises well.")
+    print("  OK — model generalises well.")
 
 # ─── Feature importance ───────────────────────────────────────────────────────
 
@@ -234,7 +235,7 @@ plt.gca().invert_yaxis()
 plt.tight_layout()
 plt.savefig("role_fit_feature_importance.png", dpi=150)
 plt.close()
-print("✓ Saved role_fit_feature_importance.png")
+print(" Saved role_fit_feature_importance.png")
 
 # ─── Example ─────────────────────────────────────────────────────────────────
 
@@ -252,5 +253,5 @@ print(f"Actual:    {actual:.4f} ({int(actual*100)}/100)")
 
 model_path = os.path.join(OUTPUT_DIR, "role_fit_model.pkl")
 joblib.dump(final_model, model_path)
-print(f"\n✓ Model saved → {model_path}")
+print(f"\n Model saved -> {model_path}")
 print("Model 2 training complete.")

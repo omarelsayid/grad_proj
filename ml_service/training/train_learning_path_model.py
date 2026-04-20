@@ -43,7 +43,8 @@ import lightgbm as lgb
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 from sklearn.model_selection import GroupShuffleSplit, cross_val_score
 
-OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "app", "models")
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "app", "models")
+DATA_DIR   = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "Data")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 print("=" * 80)
@@ -54,8 +55,8 @@ print("=" * 80)
 # 1. HELPERS & DATA LOADING
 # ============================================================================
 
-def load_and_clean(filepath: str) -> pd.DataFrame:
-    df = pd.read_csv(filepath)
+def load_and_clean(filename: str) -> pd.DataFrame:
+    df = pd.read_csv(os.path.join(DATA_DIR, filename))
     df.columns = df.columns.str.replace(r"^\ufeff", "", regex=True).str.strip()
     return df
 
@@ -124,7 +125,7 @@ print(f"DAG: {G.number_of_nodes()} nodes, {G.number_of_edges()} edges")
 
 print("\nBuilding training dataset...")
 
-# Join training_history → learning_resources to get resource attributes
+# Join training_history -> learning_resources to get resource attributes
 res_cols = ["resource_id"]
 if "duration_hours" not in learning_resources.columns:
     learning_resources["duration_hours"] = 5.0
@@ -347,13 +348,13 @@ gap_rmse = train_rmse - rmse   # negative = train harder than test (unusual)
 gap_r2   = train_r2   - r2
 print("\n--- OVERFITTING DIAGNOSTICS ---")
 print(f"  Train RMSE: {train_rmse:.4f}  |  Test RMSE: {rmse:.4f}")
-print(f"  Train R²  : {train_r2:.4f}  |  Test R²  : {r2:.4f}")
-print(f"  Train-Test R² gap: {gap_r2:.4f}", end="  ")
+print(f"  Train R2  : {train_r2:.4f}  |  Test R2  : {r2:.4f}")
+print(f"  Train-Test R2 gap: {gap_r2:.4f}", end="  ")
 if gap_r2 > 0.10:
-    print("⚠  WARNING — gap > 0.10, model may be overfitting. "
+    print("WARNING  WARNING — gap > 0.10, model may be overfitting. "
           "Try lower num_leaves, higher min_child_samples, or more reg_lambda.")
 else:
-    print("✓  OK — model generalises well.")
+    print("  OK — model generalises well.")
 
 # ─── Plots ────────────────────────────────────────────────────────────────────
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))

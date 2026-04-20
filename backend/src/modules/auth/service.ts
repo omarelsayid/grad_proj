@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { eq } from 'drizzle-orm';
 import { db } from '../../db';
-import { users, userRoles, employees, refreshTokens } from '../../db/schema';
+import { users, userRoles, employees, employeeSkills, refreshTokens } from '../../db/schema';
 import { env } from '../../config/env';
 import { AppError } from '../../middleware/errorHandler';
 import type { JwtPayload } from '../../middleware/auth';
@@ -37,7 +37,7 @@ async function buildTokenResponse(userId: string, role: 'employee' | 'manager' |
     expiresAt: refreshExpiry(),
   });
 
-  // Fetch employee profile if exists
+  // Fetch employee profile + skills if exists
   let employee = null;
   if (employeeId) {
     const rows = await db
@@ -45,7 +45,21 @@ async function buildTokenResponse(userId: string, role: 'employee' | 'manager' |
       .from(employees)
       .where(eq(employees.id, employeeId))
       .limit(1);
-    employee = rows[0] ?? null;
+    const emp = rows[0] ?? null;
+    if (emp) {
+      const skillRows = await db
+        .select()
+        .from(employeeSkills)
+        .where(eq(employeeSkills.employeeId, employeeId));
+      employee = {
+        ...emp,
+        skills: skillRows.map((s) => ({
+          skillId:     s.skillId,
+          proficiency: s.proficiency,
+          lastAssessed: s.lastAssessed,
+        })),
+      };
+    }
   }
 
   return { accessToken, refreshToken, employee, role };

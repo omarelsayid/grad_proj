@@ -1,6 +1,6 @@
 // lib/domain/entities/learning_item.dart
 
-enum LearningType { course, certification, project, mentorship }
+enum LearningType { course, article, certification, project, mentorship }
 
 class LearningItem {
   final String id;
@@ -9,8 +9,10 @@ class LearningItem {
   final String skillId;
   final LearningType type;
   final String duration;
+  final int estimatedHours; // 0 for articles (quick reads)
   final int priority; // 1 = highest
   final String url;
+  final String platform;
 
   const LearningItem({
     required this.id,
@@ -19,8 +21,10 @@ class LearningItem {
     required this.skillId,
     required this.type,
     required this.duration,
+    required this.estimatedHours,
     required this.priority,
     required this.url,
+    required this.platform,
   });
 
   LearningItem copyWith({
@@ -30,8 +34,10 @@ class LearningItem {
     String? skillId,
     LearningType? type,
     String? duration,
+    int? estimatedHours,
     int? priority,
     String? url,
+    String? platform,
   }) =>
       LearningItem(
         id: id ?? this.id,
@@ -40,16 +46,19 @@ class LearningItem {
         skillId: skillId ?? this.skillId,
         type: type ?? this.type,
         duration: duration ?? this.duration,
+        estimatedHours: estimatedHours ?? this.estimatedHours,
         priority: priority ?? this.priority,
         url: url ?? this.url,
+        platform: platform ?? this.platform,
       );
 
   String get typeLabel {
     switch (type) {
-      case LearningType.course: return 'Course';
-      case LearningType.certification: return 'Certification';
-      case LearningType.project: return 'Project';
-      case LearningType.mentorship: return 'Mentorship';
+      case LearningType.course:        return 'Course';
+      case LearningType.article:       return 'Article';
+      case LearningType.certification: return 'Cert';
+      case LearningType.project:       return 'Project';
+      case LearningType.mentorship:    return 'Mentorship';
     }
   }
 

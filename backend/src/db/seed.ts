@@ -221,19 +221,25 @@ async function seed() {
 
   // 6. Demo user accounts
   logger.info('Seeding demo users...');
+  const { eq } = await import('drizzle-orm');
   for (const du of DEMO_USERS) {
-    const userId        = crypto.randomUUID();
-    const passwordHash  = await bcrypt.hash(du.password, 12);
-    await db.insert(users).values({ id: userId, email: du.email, passwordHash }).onConflictDoNothing();
+    const newId       = crypto.randomUUID();
+    const passwordHash = await bcrypt.hash(du.password, 12);
+
+    // Insert user — if already exists, skip
+    await db.insert(users).values({ id: newId, email: du.email, passwordHash }).onConflictDoNothing();
+
+    // Fetch the actual user ID (may differ from newId if row already existed)
+    const [existing] = await db.select({ id: users.id }).from(users).where(eq(users.email, du.email));
+    if (!existing) continue;
+    const userId = existing.id;
+
     await db.insert(userRoles).values({ userId, role: du.role }).onConflictDoNothing();
 
     // Link to employee
     const empRow = EMPLOYEES.find((e) => e.email === du.email);
     if (empRow) {
-      await db.update(employees).set({ userId }).where(
-        // Use raw SQL for conditional update without drizzle eq import complexity
-        (await import('drizzle-orm')).eq(employees.id, empRow.id),
-      );
+      await db.update(employees).set({ userId }).where(eq(employees.id, empRow.id));
     }
   }
   logger.info('✅  Demo users seeded (Employee@123, Manager@123, Admin@123)');
@@ -250,7 +256,41 @@ async function seed() {
   }
   logger.info('✅  Leave balances seeded');
 
-  // 8. Holidays
+  // 8. Attendance records for demo employee (emp01) — last 30 calendar days
+  logger.info('Seeding attendance...');
+  const today = new Date();
+  const attendanceRows: Array<{
+    id: string; employeeId: string; date: string;
+    checkIn: string|null; checkOut: string|null;
+    status: 'present'|'late'|'absent'|'half_day'|'remote';
+    type: 'office'|'remote'|'field';
+  }> = [];
+  for (let i = 30; i >= 1; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const dow = d.getDay(); // 0=Sun, 6=Sat
+    if (dow === 0 || dow === 6) continue;
+    const dateStr = d.toISOString().slice(0, 10);
+    // Vary the pattern: mostly present, occasionally late/remote/absent
+    let status: 'present'|'late'|'absent'|'half_day'|'remote' = 'present';
+    let checkIn: string|null = '09:00'; let checkOut: string|null = '17:00';
+    let type: 'office'|'remote'|'field' = 'office';
+    const r = i % 7;
+    if (r === 1)      { status = 'late';    checkIn = '10:15'; checkOut = '18:00'; }
+    else if (r === 3) { status = 'remote';  type = 'remote'; }
+    else if (r === 5) { status = 'absent';  checkIn = null; checkOut = null; }
+    else if (r === 6) { status = 'half_day'; checkOut = '13:00'; }
+    attendanceRows.push({
+      id: crypto.randomUUID(), employeeId: 'emp01', date: dateStr,
+      checkIn, checkOut, status, type,
+    });
+  }
+  for (const row of attendanceRows) {
+    await db.insert(attendance).values(row).onConflictDoNothing();
+  }
+  logger.info(`✅  ${attendanceRows.length} attendance records seeded`);
+
+  // 9. Holidays
   logger.info('Seeding holidays...');
   for (const h of HOLIDAYS) {
     await db.insert(holidays).values({ id: crypto.randomUUID(), ...h }).onConflictDoNothing();

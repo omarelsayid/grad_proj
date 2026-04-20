@@ -314,12 +314,27 @@ export const jobRolesRelations = relations(jobRoles, ({ many }) => ({
   employees:      many(employees),
 }));
 
+export const roleRequiredSkillsRelations = relations(roleRequiredSkills, ({ one }) => ({
+  role:  one(jobRoles, { fields: [roleRequiredSkills.roleId],  references: [jobRoles.id] }),
+  skill: one(skills,   { fields: [roleRequiredSkills.skillId], references: [skills.id] }),
+}));
+
 export const skillsRelations = relations(skills, ({ many }) => ({
   roleRequirements: many(roleRequiredSkills),
   employeeSkills:   many(employeeSkills),
   chainsFrom:       many(skillChains, { relationName: 'chainsFrom' }),
   chainsTo:         many(skillChains, { relationName: 'chainsTo' }),
   learningItems:    many(learningItems),
+}));
+
+export const employeeSkillsRelations = relations(employeeSkills, ({ one }) => ({
+  employee: one(employees, { fields: [employeeSkills.employeeId], references: [employees.id] }),
+  skill:    one(skills,    { fields: [employeeSkills.skillId],    references: [skills.id] }),
+}));
+
+export const skillChainsRelations = relations(skillChains, ({ one }) => ({
+  fromSkill: one(skills, { fields: [skillChains.fromSkillId], references: [skills.id], relationName: 'chainsFrom' }),
+  toSkill:   one(skills, { fields: [skillChains.toSkillId],   references: [skills.id], relationName: 'chainsTo' }),
 }));
 
 // ── Type exports ──────────────────────────────────────────────────────────────

@@ -66,13 +66,14 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 from xgboost import XGBClassifier
 
-OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "app", "models")
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "app", "models")
+DATA_DIR   = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "Data")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # ─── Helpers ─────────────────────────────────────────────────────────────────
 
-def load_and_clean(filepath: str) -> pd.DataFrame:
-    df = pd.read_csv(filepath)
+def load_and_clean(filename: str) -> pd.DataFrame:
+    df = pd.read_csv(os.path.join(DATA_DIR, filename))
     df.columns = df.columns.str.replace(r"^\ufeff", "", regex=True).str.strip()
     return df
 
@@ -103,7 +104,7 @@ print("=" * 80)
 # ============================================================================
 
 print("\nLoading data...")
-df = load_and_clean("employee_turnover_dataset.csv")
+df = load_and_clean("turnover_ml_dataset.csv")
 print(f"Dataset shape: {df.shape}")
 print(f"Turnover rate: {df['turnover_label'].mean() * 100:.2f}%")
 
@@ -363,10 +364,10 @@ print(f"  Val   F1 : {val_f1:.4f}")
 print(f"  Test  F1 : {test_f1:.4f}")
 print(f"  Train-Val gap: {gap:.4f}", end="  ")
 if gap > 0.10:
-    print("⚠  WARNING — gap > 0.10, model may be overfitting. "
+    print("WARNING  WARNING — gap > 0.10, model may be overfitting. "
           "Consider more regularization or less depth.")
 else:
-    print("✓  OK — model generalises well.")
+    print("  OK — model generalises well.")
 
 # ============================================================================
 # SECTION 7: PLOTS

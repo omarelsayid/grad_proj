@@ -11,7 +11,10 @@ function getConnection(): IORedis {
     connection = new IORedis(env.REDIS_URL, {
       maxRetriesPerRequest: null,
       lazyConnect: true,
+      enableOfflineQueue: false,
+      retryStrategy: () => null, // don't retry — Redis is optional
     });
+    connection.on('error', () => {}); // silence connection errors
   }
   return connection;
 }

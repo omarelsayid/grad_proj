@@ -13,16 +13,34 @@ class GetSuggestedLearningUseCase {
     required Employee employee,
     required Role targetRole,
     required List<LearningItem> catalog,
-    int limit = 10,
+    int limit = 15,
   }) {
     final result = _roleFitUseCase.call(employee, targetRole);
     final missingSkillIds = result.missingSkillIds.toSet();
+    final employeeSkillIds = {for (final es in employee.skills) es.skillId};
 
-    final relevant = catalog
+    // 1. Courses that close skill gaps (highest value)
+    final gapItems = catalog
         .where((item) => missingSkillIds.contains(item.skillId))
         .toList()
       ..sort((a, b) => a.priority.compareTo(b.priority));
 
-    return relevant.take(limit).toList();
+    // 2. Courses for skills the employee already has (level-up / deepen)
+    final levelUpItems = catalog
+        .where((item) =>
+            !missingSkillIds.contains(item.skillId) &&
+            employeeSkillIds.contains(item.skillId))
+        .toList()
+      ..sort((a, b) => a.priority.compareTo(b.priority));
+
+    // 3. Remaining courses (broaden knowledge)
+    final otherItems = catalog
+        .where((item) =>
+            !missingSkillIds.contains(item.skillId) &&
+            !employeeSkillIds.contains(item.skillId))
+        .toList()
+      ..sort((a, b) => a.priority.compareTo(b.priority));
+
+    return [...gapItems, ...levelUpItems, ...otherItems].take(limit).toList();
   }
 }

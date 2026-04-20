@@ -30,6 +30,7 @@ final managerNavItems = <NavItem>[
   const NavItem(label: 'Departments', icon: Icons.account_tree_outlined, route: '/manager/departments'),
   const NavItem(label: 'Roles', icon: Icons.badge_outlined, route: '/manager/roles'),
   const NavItem(label: 'Skills', icon: Icons.psychology_outlined, route: '/manager/skills'),
+  const NavItem(label: 'Learning', icon: Icons.school_outlined, route: '/manager/learning'),
   const NavItem(label: 'Replacements', icon: Icons.people_outlined, route: '/manager/replacements'),
   const NavItem(label: 'Attendance', icon: Icons.calendar_month_outlined, route: '/manager/attendance'),
   const NavItem(label: 'Leaves', icon: Icons.beach_access_outlined, route: '/manager/leaves'),

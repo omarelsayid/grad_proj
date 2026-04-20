@@ -18,7 +18,8 @@ import seaborn as sns
 
 warnings.filterwarnings("ignore")
 
-OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "app", "models")
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "app", "models")
+DATA_DIR   = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "Data")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 print("=" * 80)
@@ -28,8 +29,8 @@ print("=" * 80)
 
 # ─── Helpers ─────────────────────────────────────────────────────────────────
 
-def load_and_clean(filepath: str) -> pd.DataFrame:
-    df = pd.read_csv(filepath)
+def load_and_clean(filename: str) -> pd.DataFrame:
+    df = pd.read_csv(os.path.join(DATA_DIR, filename))
     df.columns = df.columns.str.replace(r"^\ufeff", "", regex=True).str.strip()
     return df
 
@@ -110,7 +111,7 @@ else:
     headcount = {r: 1 for r in job_requirements[job_role_col].unique()}
 
 demand_records = []
-dept_skill_map: dict[str, list[str]] = {}   # skill_id → list of departments
+dept_skill_map: dict[str, list[str]] = {}   # skill_id -> list of departments
 
 for _, row in job_requirements.iterrows():
     role_id    = row[job_role_col]
@@ -153,7 +154,7 @@ analysis["avg_proficiency"] = analysis["avg_proficiency"].fillna(0)
 analysis["total_demand"]    = analysis["total_demand"].fillna(0)
 analysis["employee_count"]  = analysis["employee_count"].fillna(0)
 
-# Total supply: avg proficiency × number of employees who have this skill
+# Total supply: avg proficiency x number of employees who have this skill
 analysis["total_supply"] = analysis["avg_proficiency"] * analysis["employee_count"]
 
 # gap_ratio = demand / supply (capped at 10 to avoid ∞)
@@ -244,7 +245,7 @@ axes[1].set_title("Skill Gap Criticality Distribution", fontweight="bold")
 plt.tight_layout()
 plt.savefig("skill_gap_analysis.png", dpi=150)
 plt.close()
-print("✓ Saved skill_gap_analysis.png")
+print("Saved skill_gap_analysis.png")
 
 # Heatmap: top 15 skills vs demand/supply
 fig2, ax = plt.subplots(figsize=(12, 6))
@@ -256,16 +257,16 @@ ax.set_title("Top 15 Skills — Demand / Supply / Gap Ratio", fontweight="bold")
 plt.tight_layout()
 plt.savefig("skill_gap_heatmap.png", dpi=150)
 plt.close()
-print("✓ Saved skill_gap_heatmap.png")
+print("Saved skill_gap_heatmap.png")
 
 # ─── Save results ─────────────────────────────────────────────────────────────
 
 analysis.to_csv("skill_gap_analysis_results.csv", index=False)
-print("✓ Saved skill_gap_analysis_results.csv")
+print("Saved skill_gap_analysis_results.csv")
 
 # Save serialised baseline for FastAPI service
 baseline_path = os.path.join(OUTPUT_DIR, "skill_gap_baseline.pkl")
 joblib.dump(analysis, baseline_path)
-print(f"✓ Saved skill_gap_baseline → {baseline_path}")
+print(f"Saved skill_gap_baseline -> {baseline_path}")
 
 print("\nModel 3 analysis complete.")

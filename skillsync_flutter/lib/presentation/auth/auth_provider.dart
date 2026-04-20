@@ -1,18 +1,18 @@
 // lib/presentation/auth/auth_provider.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/employee.dart';
-import '../../data/repositories/mock_employee_repository.dart';
-import '../../data/repositories/mock_skill_repository.dart';
+import '../../data/repositories/api_employee_repository.dart';
+import '../../data/repositories/api_skill_repository.dart';
 import '../../domain/repositories/employee_repository.dart';
 import '../../domain/repositories/skill_repository.dart';
 
 // Repository providers (singletons)
 final employeeRepositoryProvider = Provider<EmployeeRepository>(
-  (_) => MockEmployeeRepository(),
+  (_) => ApiEmployeeRepository(),
 );
 
 final skillRepositoryProvider = Provider<SkillRepository>(
-  (_) => MockSkillRepository(),
+  (_) => ApiSkillRepository(),
 );
 
 // Auth state
