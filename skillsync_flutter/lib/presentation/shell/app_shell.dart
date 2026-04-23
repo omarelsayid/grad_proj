@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../auth/auth_provider.dart';
+import '../hr_buddy/screen.dart';
 import 'nav_item.dart';
 
 class AppShell extends ConsumerWidget {
@@ -35,7 +36,9 @@ class AppShell extends ConsumerWidget {
             icon: CircleAvatar(
               radius: 16,
               child: Text(
-                authState.currentUser?.name.substring(0, 1).toUpperCase() ?? 'U',
+                authState.currentUser?.name.isNotEmpty == true
+                    ? authState.currentUser!.name.substring(0, 1).toUpperCase()
+                    : 'U',
                 style: const TextStyle(fontSize: 14),
               ),
             ),
@@ -69,6 +72,14 @@ class AppShell extends ConsumerWidget {
         ],
       ),
       drawer: isWide ? null : _buildDrawer(context),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const HrBuddyChatScreen()),
+        ),
+        icon: const Icon(Icons.support_agent),
+        label: const Text('HR Buddy'),
+        tooltip: 'Ask HR policy questions',
+      ),
       body: isWide
           ? Row(children: [
               _SidebarNav(navItems: navItems),

@@ -148,6 +148,12 @@ class _EmployeeLearningScreenState
                   completed: completed,
                   inProgress: inProgress,
                   mlActive: mlPriorities != null),
+              _RoleSelectorRow(
+                roles: roles,
+                selectedRoleId: selectedRoleId ?? employee.roleId,
+                onChanged: (id) =>
+                    ref.read(selectedTargetRoleProvider.notifier).state = id,
+              ),
               _FilterRow(
                   current: _filter,
                   onChanged: (f) => setState(() => _filter = f)),
@@ -311,6 +317,49 @@ class _ProgressHeader extends StatelessWidget {
             backgroundColor: Colors.grey.shade200,
             color: AppColors.success,
             minHeight: 6,
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
+// ── Role selector row ──────────────────────────────────────────────────────────
+class _RoleSelectorRow extends StatelessWidget {
+  final List<Role> roles;
+  final String? selectedRoleId;
+  final ValueChanged<String> onChanged;
+
+  const _RoleSelectorRow({
+    required this.roles,
+    required this.selectedRoleId,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+      ),
+      child: Row(children: [
+        const Icon(Icons.work_outline, size: 14, color: Colors.grey),
+        const SizedBox(width: 6),
+        const Text('Target Role:', style: TextStyle(fontSize: 12, color: Colors.grey)),
+        const SizedBox(width: 8),
+        Expanded(
+          child: DropdownButton<String>(
+            value: selectedRoleId,
+            isExpanded: true,
+            isDense: true,
+            underline: const SizedBox.shrink(),
+            style: const TextStyle(fontSize: 12, color: Colors.black87, overflow: TextOverflow.ellipsis),
+            items: roles.map((r) => DropdownMenuItem(
+              value: r.id,
+              child: Text(r.title, overflow: TextOverflow.ellipsis),
+            )).toList(),
+            onChanged: (v) { if (v != null) onChanged(v); },
           ),
         ),
       ]),

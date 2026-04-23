@@ -122,11 +122,15 @@ export async function login(email: string, password: string) {
   const roleRow = await db.select().from(userRoles).where(eq(userRoles.userId, user.id)).limit(1);
   const role = roleRow[0]?.role ?? 'employee';
 
-  const empRow = await db.select({ id: employees.id })
+  // Look up by userId first (set by seed); fall back to email match for manually-created accounts
+  const empByUser = await db.select({ id: employees.id })
     .from(employees)
-    .where(eq(employees.email, user.email))
+    .where(eq(employees.userId, user.id))
     .limit(1);
-  const employeeId = empRow[0]?.id ?? null;
+  const empByEmail = empByUser.length === 0
+    ? await db.select({ id: employees.id }).from(employees).where(eq(employees.email, user.email)).limit(1)
+    : [];
+  const employeeId = empByUser[0]?.id ?? empByEmail[0]?.id ?? null;
 
   return buildTokenResponse(user.id, role, employeeId);
 }

@@ -8,6 +8,7 @@ SkillSync is a skill-driven HRMS built as a graduation project. It consists of:
 | Frontend | React 18 + Vite + Tailwind (Lovable UI) | `UI&UXLOVABLE/skillsynchrms-main/` | 5173 |
 | Backend API | Node.js 20 + Express + TypeScript | `backend/` | 3000 |
 | ML Service | Python 3.11 + FastAPI | `ml_service/` | 8000 |
+| **HR Buddy** | **Python 3.11 + FastAPI RAG chatbot** | **`hr_buddy/backend/`** | **8001** |
 | Database | PostgreSQL 15 | local | 5432 |
 
 ## Backend Structure (`backend/`)
@@ -218,8 +219,88 @@ Located at `skillsync_flutter/`. Flutter frontend with clean architecture, 3 por
 - `NavigationRail` does not scroll — use `ListView.builder` inside `Expanded` for sidebars with many items
 - Manager "team" is always `allEmps.take(10)` (mock — first 10 employees)
 
+## HR Buddy (`hr_buddy/`)
+RAG chatbot grounded in `SkillSync_Company_Policy_2026.pdf`. Answers policy questions with page citations. Added 2026-04-23.
+
+### Stack
+- **PDF parsing**: pypdf — page-aware chunking (700 chars, 150 overlap)
+- **Embeddings**: sentence-transformers `all-MiniLM-L6-v2` (local, no API key) or HF Inference API
+- **Vector store**: numpy `.npy` + `.json` (replaces ChromaDB — no C++ build tools needed on Windows)
+- **LLM**: OpenAI-compatible client — configurable `LLM_BASE_URL` + `LLM_API_KEY` + `LLM_MODEL`
+- **Fallback mode**: if no LLM key configured, returns retrieved page text directly
+
+### Structure
+```
+hr_buddy/backend/
+  app/
+    config.py              ← pydantic-settings, reads .env
+    schemas.py             ← ChatRequest / ChatResponse / Citation / Health / Ingest
+    main.py                ← FastAPI app, lifespan loads vector store on startup
+    services/
+      pdf_ingest.py        ← extract_chunks, _get_embedding_fn, save_store/load_store
+      retriever.py         ← cosine_similarity over numpy matrix → RetrievedChunk list
+      prompt_builder.py    ← SYSTEM_PROMPT + build_prompt() + build_fallback_answer()
+      llm.py               ← chat_complete() using openai client
+    data/store/            ← embeddings.npy + chunks.json (created after first ingest)
+  tests/
+    test_ingest.py         ← 6 unit tests for chunker/cleaner
+    test_chat.py           ← integration tests for /chat /health /reset-index
+  requirements.txt
+  .env / .env.example
+  Dockerfile
+README.md                  ← full setup + curl examples
+```
+
+### API Endpoints
+| Method | Path | Description |
+|---|---|---|
+| GET | `/health` | Index readiness + chunk count |
+| POST | `/ingest-pdf` | Load PDF → chunk → embed → persist |
+| POST | `/chat` | RAG answer + page citations |
+| DELETE | `/reset-index` | Wipe vector store |
+
+### Start Commands
+```bash
+cd hr_buddy/backend
+cp .env.example .env           # fill LLM_BASE_URL + LLM_API_KEY (optional)
+py -m pip install -r requirements.txt
+uvicorn app.main:app --port 8001 --reload
+curl -X POST http://localhost:8001/ingest-pdf    # one-time, ~30s first run
+```
+
+### Environment Variables (`.env`)
+```
+EMBEDDING_PROVIDER=local              # "local" | "hf_inference"
+EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+HF_TOKEN=                             # only needed for hf_inference
+LLM_BASE_URL=                         # e.g. https://api.openai.com/v1 or Groq
+LLM_API_KEY=
+LLM_MODEL=gpt-4o-mini
+CHROMA_DIR=./app/data/store           # numpy store directory
+PDF_PATH=../../SkillSync_Company_Policy_2026.pdf
+TOP_K=5
+CORS_ORIGINS=http://localhost:3000,http://localhost:5173,http://localhost:8080
+```
+
+### Flutter Integration
+HR Buddy is wired into the Flutter app at:
+- `lib/models/chat_models.dart` — `ChatMessage`, `ChatCitation`, `ChatResponse`
+- `lib/services/hr_buddy_service.dart` — `isReady()`, `ingestPdf()`, `sendMessage()`
+- `lib/widgets/chat_bubble.dart` — `ChatBubble` + `TypingIndicator` + citation chips
+- `lib/presentation/hr_buddy/screen.dart` — full chat UI with welcome + suggestions
+- `lib/presentation/shell/app_shell.dart` — `FloatingActionButton.extended` → opens HR Buddy in ALL portals
+
+Backend URL is hardcoded to `http://localhost:8001` in `hr_buddy_service.dart` — change `_baseUrl` for deployment.
+
+### HR Buddy Notes
+- First run of `/ingest-pdf` downloads the sentence-transformers model (~90 MB) — subsequent runs are instant
+- Without `LLM_BASE_URL`, fallback mode returns top retrieved chunk text directly (no LLM call)
+- Re-ingesting is idempotent — it overwrites the previous `.npy` + `.json`
+- PDF path is relative to `hr_buddy/backend/` — the default `../../SkillSync_Company_Policy_2026.pdf` points to the project root
+
 ## Important Notes
 - Windows development environment (paths use forward slashes in code)
 - No Redis required to start the API — BullMQ jobs are optional extensions
 - `fetch` is used natively in Node 20+ for ML proxy (no axios needed)
 - `employees_core.csv` employee IDs must be `EMP0001` format (no dash) for Model 4 join to work
+- **Service ports**: React frontend=5173, Node.js API=3000, ML service=8000, HR Buddy=8001

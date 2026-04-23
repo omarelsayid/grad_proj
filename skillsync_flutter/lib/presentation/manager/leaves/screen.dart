@@ -24,14 +24,24 @@ class _State extends ConsumerState<ManagerLeavesScreen> {
   void initState() { super.initState(); _load(); }
 
   Future<void> _load() async {
-    final repo = ref.read(employeeRepositoryProvider);
-    final emps = await repo.getAll();
-    final requests = await repo.getLeaveRequests();
-    if (mounted) setState(() {
-      _empMap = {for (final e in emps) e.id: e};
-      _requests = requests.toList();
-      _loading = false;
-    });
+    try {
+      final manager = ref.read(authProvider).currentUser;
+      final repo = ref.read(employeeRepositoryProvider);
+      final allEmps = await repo.getAll();
+      // Show only direct team: same department, excluding the manager
+      final teamEmps = allEmps
+          .where((e) => e.department == manager?.department && e.id != manager?.id)
+          .toList();
+      final teamIds = {for (final e in teamEmps) e.id};
+      final allRequests = await repo.getLeaveRequests();
+      if (mounted) setState(() {
+        _empMap = {for (final e in teamEmps) e.id: e};
+        _requests = allRequests.where((r) => teamIds.contains(r.employeeId)).toList();
+        _loading = false;
+      });
+    } catch (_) {
+      if (mounted) { setState(() => _loading = false); }
+    }
   }
 
   Future<void> _updateStatus(LeaveRequest req, LeaveStatus status) async {

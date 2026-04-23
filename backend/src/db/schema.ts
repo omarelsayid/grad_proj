@@ -89,14 +89,16 @@ export const skillChains = pgTable('skill_chains', {
   fromSkillId: text('from_skill_id').notNull().references(() => skills.id, { onDelete: 'cascade' }),
   toSkillId:   text('to_skill_id').notNull().references(() => skills.id, { onDelete: 'cascade' }),
   description: text('description').notNull().default(''),
+  edgeWeight:  doublePrecision('edge_weight').notNull().default(1.0),
 }, (t) => ({ idx: index('sc_from_idx').on(t.fromSkillId) }));
 
 // ── 9. role_required_skills ───────────────────────────────────────────────────
 export const roleRequiredSkills = pgTable('role_required_skills', {
-  id:             text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
-  roleId:         text('role_id').notNull().references(() => jobRoles.id, { onDelete: 'cascade' }),
-  skillId:        text('skill_id').notNull().references(() => skills.id, { onDelete: 'cascade' }),
-  minProficiency: integer('min_proficiency').notNull(),
+  id:              text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  roleId:          text('role_id').notNull().references(() => jobRoles.id, { onDelete: 'cascade' }),
+  skillId:         text('skill_id').notNull().references(() => skills.id, { onDelete: 'cascade' }),
+  minProficiency:  integer('min_proficiency').notNull(),
+  importanceWeight: doublePrecision('importance_weight').notNull().default(1.0),
 }, (t) => ({ roleIdx: index('rrs_role_idx').on(t.roleId) }));
 
 // ── 10. employees ─────────────────────────────────────────────────────────────
@@ -113,6 +115,7 @@ export const employees = pgTable('employees', {
   salary:            doublePrecision('salary').notNull(),
   phone:             text('phone').notNull().default(''),
   commuteDistance:   commuteDistanceEnum('commute_distance').notNull().default('moderate'),
+  commuteDistanceKm: doublePrecision('commute_distance_km').notNull().default(0),
   satisfactionScore: doublePrecision('satisfaction_score').notNull().default(70),
   createdAt:         timestamp('created_at').notNull().defaultNow(),
   updatedAt:         timestamp('updated_at').notNull().defaultNow(),

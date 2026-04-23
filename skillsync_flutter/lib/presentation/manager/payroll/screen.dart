@@ -8,6 +8,8 @@ import '../../../domain/entities/employee.dart';
 import '../../../data/mock/mock_static_data.dart';
 import '../../employee/dashboard/provider.dart';
 
+String _monthName(int m) => const ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m];
+
 class ManagerPayrollScreen extends ConsumerWidget {
   const ManagerPayrollScreen({super.key});
 
@@ -31,11 +33,12 @@ class ManagerPayrollScreen extends ConsumerWidget {
           children: [
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.4),
+              color: Theme.of(context).colorScheme.surfaceVariant.withValues(alpha: 0.4),
               child: Row(children: [
                 const Expanded(flex: 3, child: Text('Employee', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
                 const Expanded(flex: 2, child: Text('Net Salary', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
-                const Expanded(child: Text('Status', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
+                const Expanded(flex: 2, child: Text('Period', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
+                const Expanded(child: Text('Payment', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
               ]),
             ),
             Expanded(
@@ -46,7 +49,7 @@ class ManagerPayrollScreen extends ConsumerWidget {
                   return Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     decoration: BoxDecoration(
-                      border: Border(bottom: BorderSide(color: Colors.grey.withOpacity(0.1))),
+                      border: Border(bottom: BorderSide(color: Colors.grey.withValues(alpha: 0.1))),
                     ),
                     child: Row(children: [
                       Expanded(flex: 3, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -56,6 +59,12 @@ class ManagerPayrollScreen extends ConsumerWidget {
                       Expanded(flex: 2, child: Text(
                         item.record != null ? egp.format(item.record!.netSalary) : '-',
                         style: const TextStyle(fontWeight: FontWeight.w500),
+                      )),
+                      Expanded(flex: 2, child: Text(
+                        item.record != null
+                            ? '${_monthName(item.record!.month)} ${item.record!.year}'
+                            : '-',
+                        style: const TextStyle(fontSize: 12, color: Colors.grey),
                       )),
                       Expanded(child: item.record != null
                           ? StatusChip.fromStatus(item.record!.statusLabel)

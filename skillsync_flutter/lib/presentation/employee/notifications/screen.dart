@@ -23,9 +23,16 @@ class _State extends ConsumerState<NotificationsScreen> {
 
   Future<void> _load() async {
     final emp = ref.read(authProvider).currentUser;
-    if (emp == null) { setState(() => _loading = false); return; }
-    final list = await ref.read(employeeRepositoryProvider).getNotifications(emp.id);
-    if (mounted) setState(() { _notifications = list.toList(); _loading = false; });
+    if (emp == null) {
+      setState(() => _loading = false);
+      return;
+    }
+    try {
+      final list = await ref.read(employeeRepositoryProvider).getNotifications(emp.id);
+      if (mounted) { setState(() { _notifications = list.toList(); _loading = false; }); }
+    } catch (_) {
+      if (mounted) { setState(() => _loading = false); }
+    }
   }
 
   Future<void> _markRead(AppNotification n) async {
@@ -51,7 +58,7 @@ class _State extends ConsumerState<NotificationsScreen> {
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  color: AppColors.primary.withOpacity(0.05),
+                  color: AppColors.primary.withValues(alpha:0.05),
                   child: Text('$unread unread notification${unread > 1 ? 's' : ''}', style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w500)),
                 ),
               Expanded(child: ListView.builder(
@@ -98,13 +105,13 @@ class _NotificationTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: notification.isRead ? null : AppColors.primary.withOpacity(0.04),
-          border: Border(bottom: BorderSide(color: Colors.grey.withOpacity(0.15))),
+          color: notification.isRead ? null : AppColors.primary.withValues(alpha:0.04),
+          border: Border(bottom: BorderSide(color: Colors.grey.withValues(alpha:0.15))),
         ),
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(color: _iconColor.withOpacity(0.12), shape: BoxShape.circle),
+            decoration: BoxDecoration(color: _iconColor.withValues(alpha:0.12), shape: BoxShape.circle),
             child: Icon(_icon, color: _iconColor, size: 20),
           ),
           const SizedBox(width: 12),

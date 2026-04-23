@@ -72,8 +72,8 @@ class _EmployeeDashboardScreenState extends ConsumerState<EmployeeDashboardScree
                   _MiniStat(
                     icon: Icons.track_changes,
                     label: 'Role-Fit Score',
-                    value: fitScore > 0 ? '$fitScore%' : 'Select role',
-                    sub: fitScore > 0 ? 'Match score' : 'Choose a target role',
+                    value: currentRole != null ? '$fitScore%' : 'Not set',
+                    sub: currentRole != null ? 'vs ${currentRole.title}' : 'No role assigned',
                     color: AppColors.primary,
                   ),
                   _MiniStat(

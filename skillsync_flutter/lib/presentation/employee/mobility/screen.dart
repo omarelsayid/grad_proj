@@ -66,7 +66,7 @@ class EmployeeMobilityScreen extends ConsumerWidget {
                     Text('${item.fit}%', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: color)),
                   ]),
                   const SizedBox(height: 10),
-                  LinearProgressIndicator(value: item.fit / 100, backgroundColor: color.withOpacity(0.2), valueColor: AlwaysStoppedAnimation<Color>(color), minHeight: 6),
+                  LinearProgressIndicator(value: item.fit / 100, backgroundColor: color.withValues(alpha: 0.2), color: color, minHeight: 6),
                   const SizedBox(height: 8),
                   Row(children: [
                     _Tag(label: '${item.matching} matching', color: AppColors.success),
@@ -92,7 +92,7 @@ class _Tag extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(color: color.withOpacity(0.12), borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
       child: Text(label, style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w600)),
     );
   }

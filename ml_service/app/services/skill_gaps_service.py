@@ -79,15 +79,15 @@ def _from_db() -> SkillGapsResponse:
         # Required skills + headcount per role
         cur.execute("""
             SELECT
-                jrr.required_skill_id   AS skill_id,
+                jrr.skill_id            AS skill_id,
                 jr.title                AS department,
                 jrr.min_proficiency,
                 jrr.importance_weight,
-                COUNT(p.user_id)        AS headcount
-            FROM job_roles            jr
-            JOIN job_role_requirements jrr ON jr.id = jrr.job_role_id
-            JOIN profiles              p   ON p.position = jr.title
-            GROUP BY jrr.required_skill_id, jr.title,
+                COUNT(e.id)             AS headcount
+            FROM job_roles             jr
+            JOIN role_required_skills  jrr ON jr.id = jrr.role_id
+            JOIN employees             e   ON e.current_role = jr.title
+            GROUP BY jrr.skill_id, jr.title,
                      jrr.min_proficiency, jrr.importance_weight
         """)
         demand_rows = cur.fetchall()
@@ -102,7 +102,7 @@ def _from_db() -> SkillGapsResponse:
         """)
         supply_rows = cur.fetchall()
 
-        cur.execute("SELECT skill_id, skill_name FROM skills_catalog")
+        cur.execute("SELECT id AS skill_id, name AS skill_name FROM skills")
         skill_names = {row[0]: row[1] for row in cur.fetchall()}
 
     supply_map: dict[str, tuple[float, int]] = {
