@@ -9,6 +9,8 @@ SkillSync is a skill-driven HRMS built as a graduation project. It consists of:
 | Backend API | Node.js 20 + Express + TypeScript | `backend/` | 3000 |
 | ML Service | Python 3.11 + FastAPI | `ml_service/` | 8000 |
 | **HR Buddy** | **Python 3.11 + FastAPI RAG chatbot** | **`hr_buddy/backend/`** | **8001** |
+| HR Dashboard | Python 3.11 + Streamlit | `dashboards/dashboard_hr.py` | 8501 |
+| Manager Dashboard | Python 3.11 + Streamlit | `dashboards/dashboard_manager.py` | 8502 |
 | Database | PostgreSQL 15 | local | 5432 |
 
 ## Backend Structure (`backend/`)
@@ -90,9 +92,9 @@ Stored in `user_roles` table, embedded in JWT claim `role`.
 ## Demo Credentials (after `npm run db:seed`)
 | Role | Email | Password |
 |---|---|---|
-| HR Admin | admin@skillsync.dev | Admin@123 |
-| Manager | manager@skillsync.dev | Manager@123 |
-| Employee | emp@skillsync.dev | Employee@123 |
+| HR Admin | rana.essam@skillsync.dev | Admin@123 |
+| Manager | tarek.mansour@skillsync.dev | Manager@123 |
+| Employee | ahmed.hassan@skillsync.dev | Employee@123 |
 
 ## Setup Commands
 ```bash
@@ -298,9 +300,97 @@ Backend URL is hardcoded to `http://localhost:8001` in `hr_buddy_service.dart` �
 - Re-ingesting is idempotent — it overwrites the previous `.npy` + `.json`
 - PDF path is relative to `hr_buddy/backend/` — the default `../../SkillSync_Company_Policy_2026.pdf` points to the project root
 
+## Streamlit Dashboards (`dashboards/`)
+Two analyst-grade dashboards connected to PostgreSQL + ML service. Added 2026-04-25.
+
+| Dashboard | File | Port | Who uses it |
+|---|---|---|---|
+| HR Admin Analytics | `dashboard_hr.py` | 8501 | HR Admin portal |
+| Manager Analytics | `dashboard_manager.py` | 8502 | Manager portal |
+
+### How to open a dashboard directly
+
+**Option A — Double-click the batch launcher (Windows, easiest)**
+```
+dashboards/run_hr.bat       → opens HR Admin dashboard on http://localhost:8501
+dashboards/run_manager.bat  → opens Manager dashboard on http://localhost:8502
+```
+Just double-click the `.bat` file in File Explorer. A terminal window opens, Streamlit starts, and the browser opens automatically.
+
+**Option B — Run from terminal**
+```bash
+cd dashboards
+
+# HR Admin dashboard
+streamlit run dashboard_hr.py --server.port 8501
+
+# Manager dashboard (open a second terminal)
+streamlit run dashboard_manager.py --server.port 8502
+```
+
+**Option C — From the Flutter app**
+In the Flutter app, log in as HR Admin or Manager. The "Live Analytics" item in the sidebar (second entry, blue tint with ↗ icon) calls `launchUrl` to open the dashboard in the system browser.
+
+### First-time setup (only needed once)
+```bash
+cd dashboards
+pip install -r requirements.txt   # installs streamlit, pandas, plotly, psycopg2-binary, etc.
+cp .env.example .env              # already filled with default localhost values
+```
+
+### Environment (`.env` in `dashboards/`)
+```
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=skillsync_db
+DB_USER=postgres
+DB_PASSWORD=postgres
+API_URL=http://localhost:3000/api/v1
+ML_SERVICE_URL=http://localhost:8000
+```
+
+### Prerequisites before launching
+The dashboards pull live data — make sure these are running first:
+1. **PostgreSQL** on port 5432 (seeded with `npm run db:seed`)
+2. **Node.js backend** — `cd backend && npm run dev` (port 3000)
+3. **ML service** (optional) — `cd ml_service && uvicorn app.main:app --port 8000` (port 8000); dashboards degrade gracefully if offline
+
+### Login credentials inside the dashboards
+The dashboards use the same demo accounts as the rest of the app:
+| Dashboard | Email | Password |
+|---|---|---|
+| HR Admin | admin@skillsync.dev | Admin@123 |
+| Manager | manager@skillsync.dev | Manager@123 |
+
+### Dashboard tabs
+**HR Admin (`dashboard_hr.py`)**
+- Workforce Health — headcount KPIs, 30-day attendance rate, active resignations, stale leaves, monthly payroll
+- Turnover Risk — risk-score ranking table + factor breakdown bar chart
+- Skill Gaps — stacked bar chart per criticality level (critical / high / medium / low / surplus)
+- Payroll Analytics — cost by department over last 6 months
+- Audit Log — filterable action log with entity-type selector
+
+**Manager (`dashboard_manager.py`)**
+- Team Overview — headcount, avg tenure, risk flag count, attendance rate
+- Skill Heatmap — employee × skill proficiency matrix (0=gray → 5=dark green)
+- Replacements — ML role-fit scores for top 5 replacement candidates (falls back to local skill-match if ML offline)
+- Attendance — 4-week trend line chart grouped by week
+- Leave Approvals — pending leaves with stale-alert highlighting (>24 h orange border)
+
+### Key files
+| File | Purpose |
+|---|---|
+| `dashboards/db_connection.py` | Shared psycopg2 pool + `query_df` / `query_one` helpers |
+| `dashboards/api_client.py` | HTTP wrappers: `login_user()`, `get_skill_gaps_ml()`, `predict_role_fit_ml()` |
+| `dashboards/dashboard_hr.py` | HR Admin Streamlit app (~370 lines) |
+| `dashboards/dashboard_manager.py` | Manager Streamlit app (~390 lines) |
+| `dashboards/requirements.txt` | Python dependencies |
+| `dashboards/run_hr.bat` | Windows launcher for port 8501 |
+| `dashboards/run_manager.bat` | Windows launcher for port 8502 |
+
 ## Important Notes
 - Windows development environment (paths use forward slashes in code)
 - No Redis required to start the API — BullMQ jobs are optional extensions
 - `fetch` is used natively in Node 20+ for ML proxy (no axios needed)
 - `employees_core.csv` employee IDs must be `EMP0001` format (no dash) for Model 4 join to work
-- **Service ports**: React frontend=5173, Node.js API=3000, ML service=8000, HR Buddy=8001
+- **Service ports**: React frontend=5173, Node.js API=3000, ML service=8000, HR Buddy=8001, HR Dashboard=8501, Manager Dashboard=8502

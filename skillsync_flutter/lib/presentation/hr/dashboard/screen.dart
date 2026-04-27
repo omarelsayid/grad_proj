@@ -9,6 +9,7 @@ import '../../../domain/entities/turnover_risk_data.dart';
 import '../../../domain/usecases/calculate_turnover_risk_use_case.dart';
 import '../../../domain/usecases/calculate_role_fit_use_case.dart';
 import '../../../domain/usecases/get_org_skill_gaps_use_case.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../data/mock/mock_attendance.dart';
 import '../../../data/mock/mock_static_data.dart';
 import '../../employee/dashboard/provider.dart';
@@ -53,6 +54,8 @@ class HrDashboardScreen extends ConsumerWidget {
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const _AnalyticsBanner(url: 'http://localhost:8501', label: 'HR Admin Analytics Dashboard'),
+                const SizedBox(height: 14),
                 // Compact 2×2 stat cards
                 GridView.count(
                   crossAxisCount: 2, shrinkWrap: true,
@@ -126,5 +129,49 @@ class HrDashboardScreen extends ConsumerWidget {
         );
       }),
     ]);
+  }
+}
+
+class _AnalyticsBanner extends StatelessWidget {
+  final String url;
+  final String label;
+  const _AnalyticsBanner({required this.url, required this.label});
+
+  Future<void> _launch() async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: _launch,
+        borderRadius: BorderRadius.circular(12),
+        child: Ink(
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF1e3a5f), Color(0xFF1e40af)],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(children: [
+            const Icon(Icons.bar_chart_rounded, color: Colors.white, size: 26),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                const Text('Live data · ML insights · Streamlit', style: TextStyle(color: Colors.white70, fontSize: 11)),
+              ]),
+            ),
+            const Icon(Icons.open_in_new, color: Colors.white70, size: 18),
+          ]),
+        ),
+      ),
+    );
   }
 }

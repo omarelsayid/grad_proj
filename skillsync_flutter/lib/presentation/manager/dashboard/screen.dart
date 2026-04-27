@@ -11,7 +11,7 @@ import '../../../domain/entities/skill.dart';
 import '../../../domain/usecases/calculate_role_fit_use_case.dart';
 import '../../../domain/usecases/find_replacement_candidates_use_case.dart';
 import '../../../domain/usecases/get_org_skill_gaps_use_case.dart';
-import '../../auth/auth_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../employee/dashboard/provider.dart';
 
 final _roleFitUc = const CalculateRoleFitUseCase();
@@ -26,7 +26,6 @@ class ManagerDashboardScreen extends ConsumerWidget {
     final empsAsync = ref.watch(allEmployeesProvider);
     final rolesAsync = ref.watch(employeeRolesProvider);
     final skillsAsync = ref.watch(employeeSkillsProvider);
-
     return empsAsync.when(
       loading: () => const LoadingView(),
       error: (e, _) => Center(child: Text('$e')),
@@ -37,20 +36,21 @@ class ManagerDashboardScreen extends ConsumerWidget {
           loading: () => const LoadingView(),
           error: (e, _) => Center(child: Text('$e')),
           data: (skills) {
-            // Mock: manager manages first 10 employees
             final teamEmps = allEmps.take(10).toList();
             final gaps = _skillGapsUc.call(employees: teamEmps, roles: roles, skills: skills);
 
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const _AnalyticsBanner(url: 'http://localhost:8502', label: 'Manager Analytics Dashboard'),
+                const SizedBox(height: 14),
                 GridView.count(
                   crossAxisCount: 2, shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   mainAxisSpacing: 8, crossAxisSpacing: 8, childAspectRatio: 2.4,
                   children: [
                     StatCard(label: 'Team Size', value: '${teamEmps.length}', icon: Icons.group, iconColor: AppColors.primary, onTap: () => context.go('/manager/team')),
-                    StatCard(label: 'Departments', value: '${teamEmps.map((e) => e.department).toSet().length}', icon: Icons.account_tree, iconColor: AppColors.secondary, onTap: () => context.go('/manager/departments')),
+                    StatCard(label: 'Avg Tenure', value: teamEmps.isEmpty ? '—' : '${(teamEmps.map((e) => e.tenureYears).reduce((a, b) => a + b) / teamEmps.length).toStringAsFixed(1)}y', icon: Icons.timeline_outlined, iconColor: AppColors.secondary, onTap: () => context.go('/manager/team')),
                     StatCard(label: 'Skill Gaps', value: '${gaps.length}', icon: Icons.warning_outlined, iconColor: AppColors.warning, onTap: () => context.go('/manager/skills')),
                     StatCard(label: 'Open Roles', value: '${roles.length}', icon: Icons.badge_outlined, iconColor: AppColors.accent, onTap: () => context.go('/manager/roles')),
                   ],
@@ -79,7 +79,7 @@ class ManagerDashboardScreen extends ConsumerWidget {
           subtitle: Text('Demand: ${g.demand} roles • Avg supply: ${g.avgSupply.toStringAsFixed(1)}/5'),
           trailing: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(color: AppColors.warning.withOpacity(0.15), borderRadius: BorderRadius.circular(12)),
+            decoration: BoxDecoration(color: AppColors.warning.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(12)),
             child: Text('Gap: ${g.gapRatio.toStringAsFixed(1)}', style: const TextStyle(color: AppColors.warning, fontWeight: FontWeight.bold, fontSize: 11)),
           ),
         ),
@@ -113,5 +113,49 @@ class ManagerDashboardScreen extends ConsumerWidget {
         ),
       )),
     ]);
+  }
+}
+
+class _AnalyticsBanner extends StatelessWidget {
+  final String url;
+  final String label;
+  const _AnalyticsBanner({required this.url, required this.label});
+
+  Future<void> _launch() async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: _launch,
+        borderRadius: BorderRadius.circular(12),
+        child: Ink(
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF1e3a5f), Color(0xFF0369a1)],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(children: [
+            const Icon(Icons.bar_chart_rounded, color: Colors.white, size: 26),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                const Text('Live data · ML insights · Streamlit', style: TextStyle(color: Colors.white70, fontSize: 11)),
+              ]),
+            ),
+            const Icon(Icons.open_in_new, color: Colors.white70, size: 18),
+          ]),
+        ),
+      ),
+    );
   }
 }

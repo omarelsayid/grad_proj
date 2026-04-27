@@ -5,8 +5,17 @@ class NavItem {
   final String label;
   final IconData icon;
   final String route;
+  /// When set, tapping this item opens the URL externally instead of navigating.
+  final String? externalUrl;
 
-  const NavItem({required this.label, required this.icon, required this.route});
+  const NavItem({
+    required this.label,
+    required this.icon,
+    required this.route,
+    this.externalUrl,
+  });
+
+  bool get isExternal => externalUrl != null;
 }
 
 final employeeNavItems = <NavItem>[
@@ -26,6 +35,7 @@ final employeeNavItems = <NavItem>[
 
 final managerNavItems = <NavItem>[
   const NavItem(label: 'Dashboard', icon: Icons.dashboard_outlined, route: '/manager/dashboard'),
+  const NavItem(label: 'Live Analytics', icon: Icons.bar_chart_rounded, route: '/manager/dashboard', externalUrl: 'http://localhost:8502'),
   const NavItem(label: 'Team', icon: Icons.group_outlined, route: '/manager/team'),
   const NavItem(label: 'Departments', icon: Icons.account_tree_outlined, route: '/manager/departments'),
   const NavItem(label: 'Roles', icon: Icons.badge_outlined, route: '/manager/roles'),
@@ -42,6 +52,7 @@ final managerNavItems = <NavItem>[
 
 final hrNavItems = <NavItem>[
   const NavItem(label: 'Dashboard', icon: Icons.dashboard_outlined, route: '/hr/dashboard'),
+  const NavItem(label: 'Live Analytics', icon: Icons.bar_chart_rounded, route: '/hr/dashboard', externalUrl: 'http://localhost:8501'),
   const NavItem(label: 'Employees', icon: Icons.people_outlined, route: '/hr/employees'),
   const NavItem(label: 'Departments', icon: Icons.account_tree_outlined, route: '/hr/departments'),
   const NavItem(label: 'Roles', icon: Icons.badge_outlined, route: '/hr/roles'),

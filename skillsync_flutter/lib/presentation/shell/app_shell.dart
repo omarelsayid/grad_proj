@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../auth/auth_provider.dart';
 import '../hr_buddy/screen.dart';
 import 'nav_item.dart';
@@ -111,10 +112,16 @@ class AppShell extends ConsumerWidget {
               children: navItems.map((item) => Builder(builder: (ctx) => ListTile(
                 leading: Icon(item.icon),
                 title: Text(item.label),
-                selected: GoRouterState.of(ctx).uri.path.startsWith(item.route),
-                onTap: () {
+                trailing: item.isExternal ? const Icon(Icons.open_in_new, size: 14) : null,
+                selected: !item.isExternal && GoRouterState.of(ctx).uri.path.startsWith(item.route),
+                onTap: () async {
                   Navigator.pop(ctx);
-                  ctx.go(item.route);
+                  if (item.isExternal) {
+                    final uri = Uri.parse(item.externalUrl!);
+                    if (await canLaunchUrl(uri)) launchUrl(uri, mode: LaunchMode.externalApplication);
+                  } else {
+                    ctx.go(item.route);
+                  }
                 },
               ))).toList(),
             ),
@@ -160,38 +167,50 @@ class _SidebarNav extends StatelessWidget {
               itemCount: navItems.length,
               itemBuilder: (ctx, i) {
                 final item = navItems[i];
-                final selected = currentPath.startsWith(item.route);
+                final selected = !item.isExternal && currentPath.startsWith(item.route);
+                final itemColor = item.isExternal
+                    ? const Color(0xFF1e40af)
+                    : selected
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.onSurfaceVariant;
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   child: Material(
-                    color: selected
-                        ? theme.colorScheme.primary.withValues(alpha: 0.12)
-                        : Colors.transparent,
+                    color: item.isExternal
+                        ? const Color(0xFF1e40af).withValues(alpha: 0.08)
+                        : selected
+                            ? theme.colorScheme.primary.withValues(alpha: 0.12)
+                            : Colors.transparent,
                     borderRadius: BorderRadius.circular(8),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(8),
-                      onTap: () => context.go(item.route),
+                      onTap: () async {
+                        if (item.isExternal) {
+                          final uri = Uri.parse(item.externalUrl!);
+                          if (await canLaunchUrl(uri)) {
+                            launchUrl(uri, mode: LaunchMode.externalApplication);
+                          }
+                        } else {
+                          context.go(item.route);
+                        }
+                      },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
                         child: Row(children: [
-                          Icon(
-                            item.icon,
-                            size: 19,
-                            color: selected
-                                ? theme.colorScheme.primary
-                                : theme.colorScheme.onSurfaceVariant,
-                          ),
+                          Icon(item.icon, size: 19, color: itemColor),
                           const SizedBox(width: 10),
-                          Text(
-                            item.label,
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
-                              color: selected
-                                  ? theme.colorScheme.primary
-                                  : theme.colorScheme.onSurfaceVariant,
+                          Expanded(
+                            child: Text(
+                              item.label,
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+                                color: itemColor,
+                              ),
                             ),
                           ),
+                          if (item.isExternal)
+                            Icon(Icons.open_in_new, size: 12, color: itemColor),
                         ]),
                       ),
                     ),

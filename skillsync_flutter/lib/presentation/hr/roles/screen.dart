@@ -73,7 +73,7 @@ class _RoleCard extends StatelessWidget {
             ])),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(color: _levelColor.withOpacity(0.12), borderRadius: BorderRadius.circular(16)),
+              decoration: BoxDecoration(color: _levelColor.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(16)),
               child: Text(role.levelLabel, style: TextStyle(color: _levelColor, fontWeight: FontWeight.bold, fontSize: 12)),
             ),
           ]),
@@ -89,7 +89,7 @@ class _RoleCard extends StatelessWidget {
               final skill = skillMap[req.skillId];
               return Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.08), borderRadius: BorderRadius.circular(12)),
+                decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(12)),
                 child: Text('${skill?.name ?? req.skillId} (L${req.minProficiency})', style: const TextStyle(fontSize: 11, color: AppColors.primary)),
               );
             }).toList()),
