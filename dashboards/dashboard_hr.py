@@ -11,12 +11,12 @@ from datetime import datetime
 import streamlit as st
 
 from db_connection import query_df, query_scalar, query_one
-from api_client import login_user, get_skill_gaps_ml
+from api_client import login_user, get_skill_gaps_ml, predict_role_fit_ml
 
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="SkillSync · HR Analytics",
-    page_icon="🏢",
+    page_icon="S",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -77,7 +77,7 @@ st.markdown("""
 # ══════════════════════════════════════════════════════════════════════════════
 
 def _sidebar_login():
-    st.sidebar.markdown("## 🏢 HR Analytics")
+    st.sidebar.markdown("## HR Analytics")
     st.sidebar.markdown("---")
     with st.sidebar.form("login"):
         email    = st.text_input("Email",    value="rana.essam@skillsync.dev",  placeholder="rana.essam@skillsync.dev")
@@ -116,15 +116,15 @@ def _sidebar_user():
     u = st.session_state["hr_user"]
     st.sidebar.markdown(
         f"<div class='user-card'>"
-        f"<b>👤 {u.get('name', u.get('email',''))}</b><br>"
+        f"<b>{u.get('name', u.get('email',''))}</b><br>"
         f"<span style='font-size:0.8rem;color:#64748b'>{u.get('email','')}</span><br>"
-        f"<span style='font-size:0.75rem;color:#0ea5e9'>🔑 HR Admin</span>"
+        f"<span style='font-size:0.75rem;color:#0ea5e9'>HR Admin</span>"
         f"</div>",
         unsafe_allow_html=True,
     )
     now = datetime.now()
-    st.sidebar.markdown(f"🕐 **{now.strftime('%H:%M')}** · {now.strftime('%d %b %Y')}")
-    if st.sidebar.button("🔄 Refresh all data", use_container_width=True):
+    st.sidebar.markdown(f"**{now.strftime('%H:%M')}** · {now.strftime('%d %b %Y')}")
+    if st.sidebar.button("Refresh all data", use_container_width=True):
         st.cache_data.clear()
         st.rerun()
     if st.sidebar.button("Sign Out", use_container_width=True):
@@ -132,7 +132,6 @@ def _sidebar_user():
         st.session_state.pop("hr_token", None)
         st.rerun()
     st.sidebar.markdown("---")
-    st.sidebar.info("**Manager Dashboard** → port **8502**\n\nRun:\n```\nstreamlit run dashboard_manager.py --server.port 8502\n```")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -187,16 +186,102 @@ def _recent_joiners() -> pd.DataFrame:
     """)
 
 
-@st.cache_data(ttl=300)
-def _turnover_cache() -> pd.DataFrame:
-    return query_df("""
+@st.cache_data(ttl=600)
+def _turnover_live() -> pd.DataFrame:
+    """
+    Compute live turnover risk for all employees.
+    Features are derived from PostgreSQL; scores come from the ML service.
+    Cached for 10 min — click "Refresh all data" to force a reload.
+    """
+    import requests as _req
+
+    ML_URL = os.getenv("ML_SERVICE_URL", "http://localhost:8000")
+
+    # Quick health check — bail immediately if ML service is offline
+    try:
+        _req.get(f"{ML_URL}/health", timeout=2)
+    except Exception:
+        return pd.DataFrame(columns=["id", "name", "department", "current_role",
+                                     "risk_score", "risk_level", "factor_breakdown",
+                                     "_ml_offline"])
+
+    emps = query_df("""
         SELECT e.id, e.name, e.department, e.current_role,
-               trc.risk_score, trc.risk_level,
-               trc.factor_breakdown, trc.calculated_at
-        FROM turnover_risk_cache trc
-        JOIN employees e ON e.id = trc.employee_id
-        ORDER BY trc.risk_score DESC
+               e.commute_distance_km,
+               e.satisfaction_score,
+               (CURRENT_DATE - e.join_date::date) AS tenure_days
+        FROM employees e
+        ORDER BY e.name
     """)
+    if emps.empty:
+        return pd.DataFrame()
+
+    # Attendance features (last 30 days)
+    att = query_df("""
+        SELECT employee_id,
+               COUNT(*)                                              AS total_att,
+               SUM(CASE WHEN status = 'absent' THEN 1 ELSE 0 END)  AS absent_count,
+               SUM(CASE WHEN status = 'late'   THEN 1 ELSE 0 END)  AS late_count
+        FROM attendance
+        WHERE date >= CURRENT_DATE - INTERVAL '30 days'
+        GROUP BY employee_id
+    """)
+    emps = emps.merge(att, left_on="id", right_on="employee_id", how="left")
+    emps["total_att"]    = emps["total_att"].fillna(0).astype(int)
+    emps["absent_count"] = emps["absent_count"].fillna(0).astype(int)
+    emps["late_count"]   = emps["late_count"].fillna(0).astype(int)
+    emps["absence_rate"] = (emps["absent_count"] / emps["total_att"].clip(lower=1)).round(3)
+    emps["late_rate_raw"] = emps["late_count"]          # backend field name
+
+    # Simplified role-fit from employee_skills vs role_required_skills
+    fit = query_df("""
+        SELECT es.employee_id,
+               ROUND(
+                   100.0 * SUM(CASE WHEN es.proficiency >= COALESCE(jr.min_proficiency, 1) THEN 1 ELSE 0 END)
+                   / NULLIF(COUNT(jr.skill_id), 0), 1
+               ) AS role_fit_score
+        FROM employee_skills es
+        JOIN employees e ON e.id = es.employee_id
+        LEFT JOIN role_required_skills jr ON jr.skill_id = es.skill_id
+                                         AND jr.role_id = e.role_id
+        GROUP BY es.employee_id
+    """)
+    emps = emps.merge(fit, on="employee_id", how="left")
+    emps["role_fit_score"] = emps["role_fit_score"].fillna(70.0)
+
+    rows = []
+    for _, r in emps.iterrows():
+        absence = float(r["absence_rate"])
+        att_status = "critical" if absence > 0.2 else ("at_risk" if absence > 0.1 else "normal")
+        payload = {
+            "employee_id":        str(r["id"]),
+            "commute_distance_km": float(r["commute_distance_km"]),
+            "tenure_days":         int(r["tenure_days"]),
+            "role_fit_score":      float(r["role_fit_score"]),
+            "absence_rate":        absence,
+            "late_arrivals_30d":   int(r["late_rate_raw"]),
+            "leave_requests_90d":  0,
+            "satisfaction_score":  float(r["satisfaction_score"]),
+            "attendance_status":   att_status,
+        }
+        try:
+            resp = _req.post(f"{ML_URL}/predict/turnover", json=payload, timeout=5)
+            pred = resp.json() if resp.status_code == 200 else {}
+        except Exception:
+            pred = {}
+
+        rows.append({
+            "id":               r["id"],
+            "name":             r["name"],
+            "department":       r["department"],
+            "current_role":     r["current_role"],
+            "risk_score":       pred.get("risk_score", 0.0),
+            "risk_level":       pred.get("risk_level", "low"),
+            "factor_breakdown": pred.get("top_factors", []),
+        })
+
+    df = pd.DataFrame(rows)
+    return df.sort_values("risk_score", ascending=False).reset_index(drop=True)
 
 
 @st.cache_data(ttl=600)
@@ -253,24 +338,24 @@ def _tab_workforce():
 
     c1, c2, c3, c4, c5 = st.columns(5)
     with c1:
-        st.metric("👥 Headcount", f"{kpis['headcount']:,}")
+        st.metric("Headcount", f"{kpis['headcount']:,}")
     with c2:
         rate = float(kpis["attendance_rate"])
-        st.metric("✅ Attendance (30d)", f"{rate:.1f}%",
+        st.metric("Attendance (30d)", f"{rate:.1f}%",
                   delta="Healthy" if rate >= 85 else "⚠ Below 85%",
                   delta_color="normal" if rate >= 85 else "inverse")
     with c3:
         res = int(kpis["active_resignations"])
-        st.metric("📤 Resignations", res,
+        st.metric("Resignations", res,
                   delta="Pending" if res else None,
                   delta_color="inverse" if res else "off")
     with c4:
         sl = int(kpis["stale_leaves"])
-        st.metric("⏳ Stale Leaves >48h", sl,
+        st.metric("Stale Leaves (>48h)", sl,
                   delta="Action needed" if sl else "All clear",
                   delta_color="inverse" if sl else "off")
     with c5:
-        st.metric("💰 Monthly Payroll", f"${float(kpis['monthly_payroll']):,.0f}")
+        st.metric("Monthly Payroll", f"${float(kpis['monthly_payroll']):,.0f}")
 
     st.markdown("---")
     col_l, col_r = st.columns([3, 2])
@@ -308,25 +393,26 @@ def _tab_workforce():
 
 
 def _tab_turnover():
-    df = _turnover_cache()
+    with st.spinner("Scoring all employees via ML service…"):
+        df = _turnover_live()
 
-    if df.empty:
-        st.warning("""
-**No turnover risk data found in `turnover_risk_cache`.**
+    if df.empty or "_ml_offline" in df.columns:
+        st.error(
+            "ML service is offline — turnover scoring unavailable.\n\n"
+            "Start it with:\n```\ncd ml_service\nuvicorn app.main:app --port 8000\n```"
+        )
+        return
 
-Populate it by calling the ML prediction endpoint for each employee:
-```
-GET http://localhost:3000/api/v1/ml/turnover/{employeeId}
-```
-Or run the bulk scoring script if one exists.
-        """)
+    ml_offline = df["risk_score"].eq(0).all()
+    if ml_offline:
+        st.error("ML service appears offline (all scores = 0). Start it with: `uvicorn app.main:app --port 8000` inside `ml_service/`")
         return
 
     counts = df["risk_level"].value_counts()
     c1, c2, c3, c4 = st.columns(4)
-    for col, level, icon in zip([c1,c2,c3,c4], RISK_ORDER, ["🔴","🟠","🟡","🟢"]):
+    for col, level in zip([c1,c2,c3,c4], RISK_ORDER):
         with col:
-            st.metric(f"{icon} {level.capitalize()}", int(counts.get(level, 0)))
+            st.metric(level.capitalize(), int(counts.get(level, 0)))
 
     st.markdown("---")
     col_l, col_r = st.columns([2, 3])
@@ -361,7 +447,7 @@ Or run the bulk scoring script if one exists.
         st.markdown('<div class="section-header">Employees with Risk Score > 55</div>', unsafe_allow_html=True)
         at_risk = df[df["risk_score"] > 55].copy()
         if at_risk.empty:
-            st.success("✅ No employees above the 55-point risk threshold.")
+            st.success("No employees above the 55-point risk threshold.")
         else:
             disp = at_risk[["name","department","current_role","risk_score","risk_level"]].copy()
             disp.columns = ["Name","Department","Role","Score","Level"]
@@ -379,35 +465,41 @@ Or run the bulk scoring script if one exists.
                 use_container_width=True, hide_index=True, height=420,
             )
 
-    # Factor breakdown
+    # Factor breakdown — model returns top_factors as list[str]
     st.markdown("---")
     st.markdown('<div class="section-header">Top Risk Factors (Employees > 55)</div>', unsafe_allow_html=True)
-    factors = []
+    factor_counts: dict[str, int] = {}
     for _, row in df[df["risk_score"] > 55].iterrows():
         fb = row.get("factor_breakdown")
-        if isinstance(fb, dict):
-            for k, v in fb.items():
-                try:
-                    factors.append({"Factor": k, "Weight": float(v)})
-                except (TypeError, ValueError):
-                    pass
-        elif isinstance(fb, list):
+        if isinstance(fb, list):
             for item in fb:
                 if isinstance(item, str):
-                    factors.append({"Factor": item, "Weight": 1.0})
+                    factor_counts[item] = factor_counts.get(item, 0) + 1
 
-    if factors:
-        fdf = pd.DataFrame(factors).groupby("Factor")["Weight"].sum().sort_values(ascending=False).head(12).reset_index()
-        fig = px.bar(fdf, x="Weight", y="Factor", orientation="h",
-                     color="Weight", color_continuous_scale="Reds",
-                     text=fdf["Weight"].round(2))
+    # Map raw feature names to readable labels
+    _LABEL = {
+        "tenure_years":              "Short Tenure",
+        "work_life_balance":         "Low Work-Life Balance",
+        "role_fit_score":            "Low Role Fit",
+        "absence_rate":              "High Absence Rate",
+        "commute_distance_km":       "Long Commute",
+        "late_rate":                 "High Late Rate",
+        "attendance_status_encoded": "Poor Attendance Status",
+    }
+
+    if factor_counts:
+        fdf = (pd.DataFrame(list(factor_counts.items()), columns=["Feature", "Count"])
+               .sort_values("Count", ascending=False).head(7))
+        fdf["Factor"] = fdf["Feature"].map(lambda x: _LABEL.get(x, x))
+        fig = px.bar(fdf, x="Count", y="Factor", orientation="h",
+                     color="Count", color_continuous_scale="Reds", text="Count")
         fig.update_traces(textposition="outside")
-        fig.update_layout(height=340, margin=dict(l=0, r=60, t=5, b=0),
+        fig.update_layout(height=300, margin=dict(l=0, r=60, t=5, b=0),
                           paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                           coloraxis_showscale=False)
         st.plotly_chart(fig, use_container_width=True)
     else:
-        st.info("Factor breakdown JSON not available in current cache rows.")
+        st.info("No employees above the 55-point threshold to show factor breakdown.")
 
 
 def _tab_skill_gaps():
@@ -415,7 +507,7 @@ def _tab_skill_gaps():
         data = _skill_gaps()
 
     if "_error" in data:
-        st.error(f"⚠️ ML service error: {data['_error']}")
+        st.error(f"ML service error: {data['_error']}")
         st.info("Start the ML service: `uvicorn app.main:app --port 8000` inside `ml_service/`")
         return
 
@@ -426,13 +518,13 @@ def _tab_skill_gaps():
 
     c1, c2, c3, c4 = st.columns(4)
     with c1: st.metric("Skills Analyzed", data.get("total_skills_analyzed", len(gaps)))
-    with c2: st.metric("🔴 Critical Skills", data.get("critical_skills", 0))
+    with c2: st.metric("Critical Skills", data.get("critical_skills", 0))
     with c3:
         high_n = sum(1 for g in gaps if g.get("criticality") == "high")
-        st.metric("🟠 High Priority", high_n)
+        st.metric("High Priority", high_n)
     with c4:
         surplus = sum(1 for g in gaps if g.get("criticality") == "surplus")
-        st.metric("🟢 Surplus Skills", surplus)
+        st.metric("Surplus Skills", surplus)
 
     st.markdown("---")
     gaps_df = pd.DataFrame(gaps)
@@ -526,9 +618,9 @@ def _tab_payroll():
     avg_sal       = total_cost / total_emps if total_emps else 0
 
     c1, c2, c3 = st.columns(3)
-    with c1: st.metric("💰 Total Payroll (This Month)", f"${total_cost:,.0f}")
-    with c2: st.metric("👥 Employees Paid",             total_emps)
-    with c3: st.metric("📊 Avg Net Salary",             f"${avg_sal:,.0f}")
+    with c1: st.metric("Total Payroll (This Month)", f"${total_cost:,.0f}")
+    with c2: st.metric("Employees Paid",             total_emps)
+    with c3: st.metric("Avg Net Salary",             f"${avg_sal:,.0f}")
 
     st.markdown("---")
     col_l, col_r = st.columns([3, 2])
@@ -589,7 +681,7 @@ def _tab_audit():
         limit  = st.selectbox("Max records", [50, 100, 200, 500], index=1)
     with c3:
         st.markdown("<br>", unsafe_allow_html=True)
-        if st.button("🔄 Refresh", use_container_width=True):
+        if st.button("Refresh", use_container_width=True):
             st.cache_data.clear()
 
     df = _audit_logs(entity, limit)
@@ -624,6 +716,285 @@ def _tab_audit():
     st.dataframe(disp, use_container_width=True, hide_index=True, height=460)
 
 
+@st.cache_data(ttl=300)
+def _all_employees_for_replacement() -> pd.DataFrame:
+    return query_df("""
+        SELECT e.id, e.name, e.current_role, e.role_id, e.department
+        FROM employees e
+        ORDER BY e.name
+    """)
+
+
+@st.cache_data(ttl=300)
+def _role_req_hr(role_id: str) -> list[dict]:
+    df = query_df("""
+        SELECT rrs.skill_id, s.name AS skill_name,
+               rrs.min_proficiency, rrs.importance_weight
+        FROM role_required_skills rrs
+        JOIN skills s ON s.id = rrs.skill_id
+        WHERE rrs.role_id = %s
+    """, (role_id,))
+    return df.to_dict("records")
+
+
+@st.cache_data(ttl=300)
+def _emp_skills_hr(employee_id: str) -> list[dict]:
+    df = query_df(
+        "SELECT skill_id, proficiency FROM employee_skills WHERE employee_id = %s",
+        (employee_id,)
+    )
+    return df.to_dict("records")
+
+
+@st.cache_data(ttl=600)
+def _hr_replacement_candidates(
+    departing_id: str, role_id: str,
+    same_dept_only: bool, departing_dept: str,
+) -> list[dict]:
+    reqs = _role_req_hr(role_id)
+    if not reqs:
+        return []
+
+    all_emps = _all_employees_for_replacement()
+    pool = all_emps[all_emps["id"] != departing_id]
+    if same_dept_only:
+        pool = pool[pool["department"] == departing_dept]
+
+    results = []
+    for _, cand in pool.iterrows():
+        skills = _emp_skills_hr(cand["id"])
+        payload = {
+            "employee_id":       cand["id"],
+            "job_role_id":       role_id,
+            "employee_skills":   [{"skill_id": s["skill_id"], "proficiency": s["proficiency"]} for s in skills],
+            "role_requirements": [{"skill_id": r["skill_id"], "min_proficiency": r["min_proficiency"],
+                                   "importance_weight": r["importance_weight"]} for r in reqs],
+        }
+        try:
+            resp = predict_role_fit_ml(payload)
+            results.append({
+                "name":         cand["name"],
+                "department":   cand["department"],
+                "current_role": cand["current_role"],
+                "fit_score":    resp.get("fit_score", 0),
+                "readiness":    resp.get("readiness_level", "unknown"),
+                "matching":     resp.get("matching_skills", []),
+                "missing":      resp.get("missing_skills", []),
+            })
+        except Exception:
+            met = sum(1 for r in reqs if any(
+                s["skill_id"] == r["skill_id"] and s["proficiency"] >= r["min_proficiency"]
+                for s in skills
+            ))
+            results.append({
+                "name":         cand["name"],
+                "department":   cand["department"],
+                "current_role": cand["current_role"],
+                "fit_score":    int(100 * met / len(reqs)) if reqs else 0,
+                "readiness":    "estimated (ML offline)",
+                "matching":     [],
+                "missing":      [],
+            })
+
+    results.sort(key=lambda x: x["fit_score"], reverse=True)
+    return results[:10]
+
+
+def _tab_replacements_hr():
+    all_emps = _all_employees_for_replacement()
+    if all_emps.empty:
+        st.warning("No employee data found.")
+        return
+
+    dept_options = ["All Departments"] + sorted(all_emps["department"].unique().tolist())
+    dept_count   = all_emps["department"].nunique()
+
+    col_ctrl1, col_ctrl2 = st.columns([3, 2])
+    with col_ctrl1:
+        dept_filter = st.selectbox("Filter employees by department", dept_options)
+    with col_ctrl2:
+        same_dept_only = st.toggle("Same department candidates only", value=False)
+
+    filtered_emps = (
+        all_emps[all_emps["department"] == dept_filter]
+        if dept_filter != "All Departments"
+        else all_emps
+    )
+
+    selected_name = st.selectbox(
+        "Departing Employee",
+        filtered_emps["name"].tolist(),
+        format_func=lambda n: f"{n} ({filtered_emps[filtered_emps['name'] == n]['current_role'].values[0]})"
+        if not filtered_emps[filtered_emps["name"] == n].empty else n,
+    )
+    emp_row = filtered_emps[filtered_emps["name"] == selected_name].iloc[0]
+    departing_dept = emp_row["department"]
+    role_id        = emp_row["role_id"]
+
+    pool_size = (
+        len(all_emps[all_emps["department"] == departing_dept]) - 1
+        if same_dept_only
+        else len(all_emps) - 1
+    )
+    depts_searched = 1 if same_dept_only else dept_count
+    role_name = query_df(
+        "SELECT title FROM job_roles WHERE id = %s", (role_id,)
+    )
+    role_label = role_name.iloc[0]["title"] if not role_name.empty else role_id
+
+    # Stats banner
+    st.markdown(f"""
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;
+                padding:1rem 1.5rem;margin:1rem 0;display:flex;gap:2rem">
+        <div>
+            <div style="font-size:1.5rem;font-weight:800;color:#1e40af">{pool_size:,}</div>
+            <div style="font-size:0.78rem;color:#64748b">Candidates Searched</div>
+        </div>
+        <div style="width:1px;background:#bfdbfe"></div>
+        <div>
+            <div style="font-size:1.5rem;font-weight:800;color:#1e40af">{depts_searched}</div>
+            <div style="font-size:0.78rem;color:#64748b">Departments</div>
+        </div>
+        <div style="width:1px;background:#bfdbfe"></div>
+        <div>
+            <div style="font-size:1.5rem;font-weight:800;color:#1e40af">{role_label}</div>
+            <div style="font-size:0.78rem;color:#64748b">Open Role</div>
+        </div>
+        <div style="width:1px;background:#bfdbfe"></div>
+        <div>
+            <div style="font-size:1.5rem;font-weight:800;color:#1e40af">{departing_dept}</div>
+            <div style="font-size:0.78rem;color:#64748b">Departing From</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    with st.spinner(f"Scoring {pool_size:,} candidates via ML service…"):
+        candidates = _hr_replacement_candidates(
+            emp_row["id"], role_id, same_dept_only, departing_dept,
+        )
+
+    if not candidates:
+        st.warning("No candidates found or the role has no skill requirements configured.")
+        return
+
+    st.markdown(
+        f'<div class="section-header">Top {len(candidates)} Replacement Candidates '
+        f'for "{role_label}" — ranked by skill-fit score across {pool_size:,} employees</div>',
+        unsafe_allow_html=True,
+    )
+
+    READINESS_COLORS = {
+        "ready":             "#22c55e",
+        "near_ready":        "#eab308",
+        "needs_development": "#f97316",
+        "not_ready":         "#ef4444",
+    }
+    READINESS_BG = {
+        "ready":             "#dcfce7",
+        "near_ready":        "#fef9c3",
+        "needs_development": "#ffedd5",
+        "not_ready":         "#fee2e2",
+    }
+
+    col_l, col_r = st.columns([3, 2])
+
+    with col_l:
+        for i, c in enumerate(candidates, 1):
+            fit     = c["fit_score"]
+            ready   = c["readiness"]
+            color   = READINESS_COLORS.get(ready, "#64748b")
+            bg      = READINESS_BG.get(ready, "#f1f5f9")
+            bar_pct = min(max(fit, 0), 100)
+            matching_str = ", ".join(c["matching"][:5]) if c["matching"] else "—"
+            missing_str  = ", ".join(c["missing"][:5])  if c["missing"]  else "—"
+            ready_label  = ready.replace("_", " ").upper()
+
+            st.markdown(f"""
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;
+                        padding:0.85rem 1rem;margin-bottom:0.6rem">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                    <div>
+                        <span style="background:#dbeafe;color:#1e40af;font-weight:700;
+                                     padding:2px 8px;border-radius:6px;font-size:0.8rem">
+                            #{i}
+                        </span>
+                        &nbsp;
+                        <span style="font-weight:700;font-size:1rem">{c['name']}</span>
+                        &nbsp;
+                        <span style="color:#64748b;font-size:0.82rem">{c['current_role']}</span>
+                        &nbsp;
+                        <span style="background:#e2e8f0;color:#475569;font-size:0.72rem;
+                                     padding:1px 7px;border-radius:999px">{c['department']}</span>
+                    </div>
+                    <div style="text-align:right">
+                        <span style="font-size:1.4rem;font-weight:800;color:#1e40af">{fit}</span>
+                        <span style="color:#94a3b8;font-size:0.75rem">/100</span>
+                        &nbsp;
+                        <span style="background:{bg};color:{color};font-size:0.72rem;
+                                     font-weight:700;padding:2px 8px;border-radius:999px">
+                            {ready_label}
+                        </span>
+                    </div>
+                </div>
+                <div style="background:#e2e8f0;border-radius:999px;height:6px;margin:8px 0">
+                    <div style="background:{color};width:{bar_pct}%;height:6px;border-radius:999px"></div>
+                </div>
+                <div style="font-size:0.78rem;color:#475569">
+                    <b style="color:#16a34a">+ Matching:</b> {matching_str}<br>
+                    <b style="color:#dc2626">- Missing:</b>  {missing_str}
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+    with col_r:
+        st.markdown('<div class="section-header">Fit Score Distribution</div>', unsafe_allow_html=True)
+        scores_df = pd.DataFrame({
+            "Candidate": [f"#{i+1} {c['name']}" for i, c in enumerate(candidates)],
+            "Score":     [c["fit_score"] for c in candidates],
+            "Readiness": [c["readiness"].replace("_", " ").title() for c in candidates],
+        })
+        color_seq = [READINESS_COLORS.get(c["readiness"], "#64748b") for c in candidates]
+        fig = go.Figure(go.Bar(
+            x=scores_df["Score"],
+            y=scores_df["Candidate"],
+            orientation="h",
+            marker_color=color_seq,
+            text=scores_df["Score"].apply(lambda x: f"{x}%"),
+            textposition="outside",
+        ))
+        fig.update_layout(
+            height=max(300, len(candidates) * 44),
+            xaxis_range=[0, 110],
+            margin=dict(l=0, r=60, t=5, b=0),
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            yaxis=dict(autorange="reversed"),
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+        st.markdown('<div class="section-header">Readiness Breakdown</div>', unsafe_allow_html=True)
+        readiness_counts = {}
+        for c in candidates:
+            lbl = c["readiness"].replace("_", " ").title()
+            readiness_counts[lbl] = readiness_counts.get(lbl, 0) + 1
+        rc_df = pd.DataFrame(list(readiness_counts.items()), columns=["Level", "Count"])
+        fig2 = px.pie(rc_df, values="Count", names="Level", hole=0.5,
+                      color="Level",
+                      color_discrete_map={
+                          "Ready":             "#22c55e",
+                          "Near Ready":        "#eab308",
+                          "Needs Development": "#f97316",
+                          "Not Ready":         "#ef4444",
+                      })
+        fig2.update_traces(textinfo="percent+label")
+        fig2.update_layout(
+            height=240, margin=dict(l=0, r=0, t=0, b=0),
+            paper_bgcolor="rgba(0,0,0,0)",
+            legend=dict(orientation="h", yanchor="bottom", y=-0.3),
+        )
+        st.plotly_chart(fig2, use_container_width=True)
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # Main entry-point
 # ══════════════════════════════════════════════════════════════════════════════
@@ -631,7 +1002,7 @@ def _tab_audit():
 if "hr_user" not in st.session_state:
     st.markdown("""
     <div class="dash-header">
-        <h1>🏢 SkillSync · HR Admin Analytics Dashboard</h1>
+        <h1>SkillSync · HR Admin Analytics Dashboard</h1>
         <p>Sign in with your HR Admin credentials to access the full dashboard</p>
     </div>
     """, unsafe_allow_html=True)
@@ -644,21 +1015,23 @@ _sidebar_user()
 now = datetime.now()
 st.markdown(f"""
 <div class="dash-header">
-    <h1>🏢 SkillSync · HR Admin Analytics Dashboard</h1>
+    <h1>SkillSync · HR Admin Analytics Dashboard</h1>
     <p>Organization health overview &nbsp;·&nbsp; {now.strftime('%A, %d %B %Y')}
        &nbsp;·&nbsp; {now.strftime('%H:%M')}</p>
 </div>
 """, unsafe_allow_html=True)
 
-t1, t2, t3, t4, t5 = st.tabs([
-    "🏥 Workforce Health",
-    "⚠️ Turnover Risk",
-    "🎯 Skill Gaps",
-    "💰 Payroll Analytics",
-    "📋 Audit Log",
+t1, t2, t3, t4, t5, t6 = st.tabs([
+    "Workforce Health",
+    "Turnover Risk",
+    "Skill Gaps",
+    "Replacement Planning",
+    "Payroll Analytics",
+    "Audit Log",
 ])
 with t1: _tab_workforce()
 with t2: _tab_turnover()
 with t3: _tab_skill_gaps()
-with t4: _tab_payroll()
-with t5: _tab_audit()
+with t4: _tab_replacements_hr()
+with t5: _tab_payroll()
+with t6: _tab_audit()

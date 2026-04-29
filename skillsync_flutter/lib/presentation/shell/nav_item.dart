@@ -63,6 +63,7 @@ final hrNavItems = <NavItem>[
   const NavItem(label: 'Policies', icon: Icons.policy_outlined, route: '/hr/policies'),
   const NavItem(label: 'Analytics', icon: Icons.analytics_outlined, route: '/hr/analytics'),
   const NavItem(label: 'Turnover', icon: Icons.trending_down_outlined, route: '/hr/turnover'),
+  const NavItem(label: 'Replacements', icon: Icons.people_alt_outlined, route: '/hr/replacements'),
   const NavItem(label: 'Audit', icon: Icons.history_outlined, route: '/hr/audit'),
   const NavItem(label: 'Settings', icon: Icons.settings_outlined, route: '/hr/settings'),
   const NavItem(label: 'Notifications', icon: Icons.notifications_outlined, route: '/hr/notifications'),

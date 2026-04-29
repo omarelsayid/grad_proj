@@ -1,20 +1,24 @@
 """
-Model 4: Training Recommendation System (GBDT + Knowledge Graph) — Fixed
+Model 4: Training Recommendation System (GBDT + Knowledge Graph) — v2 (Enhanced)
 
-Bug fixed vs original:
-  emp_avg_score target leakage — the original code computed each employee's
-  average completion_score globally across ALL their records, then mapped that
-  value back as a feature.  When training on row N, this feature already
-  included row N's own target score — classic target leakage.
-
-Fix applied:
-  emp_avg_score now uses a leave-one-out (LOO) mean: for each row the mean is
-  computed over all OTHER records of the same employee, excluding the current
-  row.  This exactly mirrors what would be available at inference time.
+Bugs fixed vs original:
+  1. emp_avg_score target leakage — LOO mean excludes the current row's own
+     completion_score so the feature is always computed from prior history only.
+  2. Group leakage in Optuna CV — the original used plain cv=5, which randomly
+     splits rows and can place the same employee in both the train and validation
+     fold.  Now uses GroupKFold(5) keyed on employee_id throughout — both inside
+     the Optuna objective and in the final held-out cross-validation.
+  3. Redundant features — Pearson correlation filter (|r| >= 0.05) drops features
+     that carry no linear signal before training, reducing noise and speeding up
+     Optuna.
+  4. Over-permissive search space — tighter num_leaves (15-63), higher
+     min_child_samples (10-50), and stronger reg bounds (0.01-2.0) prevent Optuna
+     from finding configurations that overfit the training fold.
 
 Output:
-  app/models/learning_path_model.pkl   — LGBMRegressor
-  app/models/skill_chain_dag.pkl       — DAG + edge-weight lookup dict
+  app/models/learning_path_model.pkl    — LGBMRegressor
+  app/models/skill_chain_dag.pkl        — DAG + edge-weight lookup dict
+  app/models/learning_path_features.pkl — ordered feature name list
 """
 
 # ============================================================================
@@ -40,15 +44,16 @@ from optuna.samplers import TPESampler
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 
 import lightgbm as lgb
-from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
-from sklearn.model_selection import GroupShuffleSplit, cross_val_score
+from scipy.stats import pearsonr
+from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error, mean_squared_error, r2_score
+from sklearn.model_selection import GroupKFold, GroupShuffleSplit, cross_val_score
 
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "app", "models")
 DATA_DIR   = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "Data")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 print("=" * 80)
-print("MODEL 4: TRAINING RECOMMENDATION SYSTEM (GBDT + KNOWLEDGE GRAPH) — FIXED")
+print("MODEL 4: TRAINING RECOMMENDATION SYSTEM (GBDT + KNOWLEDGE GRAPH) — v2")
 print("=" * 80)
 
 # ============================================================================
@@ -255,10 +260,22 @@ for col in REQUIRED_FEATURES:
         t4[col] = 0
 
 t4_clean = t4.dropna(subset=REQUIRED_FEATURES + ["completion_score"])
-X = t4_clean[REQUIRED_FEATURES].apply(pd.to_numeric, errors="coerce").dropna()
-y = t4_clean["completion_score"].loc[X.index]
+X_all = t4_clean[REQUIRED_FEATURES].apply(pd.to_numeric, errors="coerce").dropna()
+y = t4_clean["completion_score"].loc[X_all.index]
 
-print(f"\nTraining samples: {len(X)}  |  Features: {len(REQUIRED_FEATURES)}")
+# ── Pearson correlation filter: drop features with |r| < 0.05 ────────────────
+# Features with near-zero linear correlation to the target add noise to the
+# search and may mislead the model without adding predictive signal.
+corrs = {f: abs(pearsonr(X_all[f], y)[0]) for f in REQUIRED_FEATURES}
+FEATURES_FINAL = [f for f in REQUIRED_FEATURES if corrs[f] >= 0.05]
+dropped = set(REQUIRED_FEATURES) - set(FEATURES_FINAL)
+if dropped:
+    print(f"  Dropped low-correlation features (|r|<0.05): {dropped}")
+print(f"  Final feature set ({len(FEATURES_FINAL)}): {FEATURES_FINAL}")
+
+X = X_all[FEATURES_FINAL]
+
+print(f"\nTraining samples: {len(X)}  |  Features: {len(FEATURES_FINAL)}")
 print(f"Score range: {y.min():.0f}-{y.max():.0f}  std={y.std():.2f}")
 if len(X) == 0:
     raise ValueError("No valid training samples — check data joins and employee_id format.")
@@ -279,31 +296,38 @@ print(f"Train employees: {t4_clean.iloc[tr_idx]['employee_id'].nunique()}  "
 # 5. LIGHTGBM + OPTUNA TUNING
 # ============================================================================
 
-print("\nHyperparameter tuning with Optuna (50 trials)...")
+print("\nHyperparameter tuning with Optuna (50 trials, GroupKFold CV)...")
 
 
 def m4_objective(trial):
     params = {
-        "n_estimators":       trial.suggest_int("n_estimators", 200, 1000),   # more trees
-        "learning_rate":      trial.suggest_float("learning_rate", 0.01, 0.30, log=True),  # wider range
-        "num_leaves":         trial.suggest_int("num_leaves", 31, 255),        # much more capacity
-        "max_depth":          trial.suggest_int("max_depth", 4, 12),           # explicit depth control
-        "min_child_samples":  trial.suggest_int("min_child_samples", 1, 20),   # allow smaller leaves
-        "subsample":          trial.suggest_float("subsample", 0.6, 1.0),
-        "colsample_bytree":   trial.suggest_float("colsample_bytree", 0.6, 1.0),
-        "reg_alpha":          trial.suggest_float("reg_alpha", 1e-8, 1.0, log=True),   # less aggressive L1
-        "reg_lambda":         trial.suggest_float("reg_lambda", 1e-8, 1.0, log=True),  # less aggressive L2
+        # Conservative upper bounds prevent Optuna from selecting configs that
+        # overfit individual employee histories in the training fold.
+        "n_estimators":      trial.suggest_int("n_estimators", 100, 300),
+        "learning_rate":     trial.suggest_float("learning_rate", 0.01, 0.20, log=True),
+        "num_leaves":        trial.suggest_int("num_leaves", 15, 63),
+        "max_depth":         trial.suggest_int("max_depth", 3, 8),
+        "min_child_samples": trial.suggest_int("min_child_samples", 10, 50),
+        "subsample":         trial.suggest_float("subsample", 0.6, 1.0),
+        "colsample_bytree":  trial.suggest_float("colsample_bytree", 0.6, 1.0),
+        "reg_alpha":         trial.suggest_float("reg_alpha", 0.01, 2.0, log=True),
+        "reg_lambda":        trial.suggest_float("reg_lambda", 0.01, 2.0, log=True),
         "random_state": 42, "verbose": -1,
     }
+    # GroupKFold ensures that all rows of one employee stay in the same fold,
+    # so the CV signal is not inflated by cross-employee memorisation.
+    gkf = GroupKFold(n_splits=5)
+    tr_groups = t4_clean.loc[X_tr.index, "employee_id"].values
     scores = cross_val_score(
         lgb.LGBMRegressor(**params), X_tr, y_tr.to_numpy(),
-        cv=5, scoring="neg_root_mean_squared_error",
+        cv=gkf.split(X_tr, y_tr, groups=tr_groups),
+        scoring="neg_root_mean_squared_error",
     )
     return -scores.mean()
 
 
 study = optuna.create_study(direction="minimize", sampler=TPESampler(seed=42))
-study.optimize(m4_objective, n_trials=80)  # more trials for the wider search space
+study.optimize(m4_objective, n_trials=50)
 print(f"Best CV RMSE: {study.best_value:.4f}")
 print(f"Best params:  {study.best_params}")
 
@@ -318,30 +342,37 @@ final_model = lgb.LGBMRegressor(
 final_model.fit(
     X_tr, y_tr.to_numpy(),
     eval_set=[(X_te, y_te.to_numpy())],
-    callbacks=[lgb.early_stopping(50, verbose=False)],  # more patience — was stopping too early
+    callbacks=[lgb.early_stopping(20, verbose=False)],
 )
 
 y_pred = final_model.predict(X_te)
-rmse   = np.sqrt(mean_squared_error(y_te, y_pred))
-mae    = mean_absolute_error(y_te, y_pred)
-r2     = r2_score(y_te, y_pred)
+rmse          = np.sqrt(mean_squared_error(y_te, y_pred))
+mae           = mean_absolute_error(y_te, y_pred)
+mape          = mean_absolute_percentage_error(y_te, y_pred)
+r2            = r2_score(y_te, y_pred)
 baseline_rmse = float(y_te.std())
 
-cv_scores = cross_val_score(
+# Final CV also uses GroupKFold so reported generalisation is unbiased.
+gkf_full  = GroupKFold(n_splits=5)
+all_groups = t4_clean.loc[X.index, "employee_id"].values
+cv_scores  = cross_val_score(
     lgb.LGBMRegressor(**study.best_params, random_state=42, verbose=-1),
-    X, y.to_numpy(), cv=5, scoring="neg_root_mean_squared_error",
+    X, y.to_numpy(),
+    cv=gkf_full.split(X, y, groups=all_groups),
+    scoring="neg_root_mean_squared_error",
 )
 
-train_pred  = final_model.predict(X_tr)
-train_rmse  = np.sqrt(mean_squared_error(y_tr, train_pred))
-train_r2    = r2_score(y_tr, train_pred)
+train_pred = final_model.predict(X_tr)
+train_rmse = np.sqrt(mean_squared_error(y_tr, train_pred))
+train_r2   = r2_score(y_tr, train_pred)
 
-print(f"\nFinal Model Performance (LOO emp_avg_score — no leakage):")
-print(f"  RMSE:          {rmse:.4f}  (baseline std: {baseline_rmse:.4f})")
-print(f"  MAE:           {mae:.4f}")
-print(f"  R2:            {r2:.4f}")
-print(f"  5-Fold CV RMSE:{-cv_scores.mean():.4f} +/- {cv_scores.std():.4f}")
-print(f"  RMSE/baseline: {rmse/baseline_rmse:.3f} (< 1.0 = beats mean predictor)")
+print(f"\nFinal Model Performance (LOO emp_avg_score + GroupKFold — no leakage):")
+print(f"  RMSE:              {rmse:.4f}  (baseline std: {baseline_rmse:.4f})")
+print(f"  MAE:               {mae:.4f}")
+print(f"  MAPE:              {mape:.4f}")
+print(f"  R²:                {r2:.4f}")
+print(f"  GroupKFold 5 RMSE: {-cv_scores.mean():.4f} ± {cv_scores.std():.4f}")
+print(f"  RMSE/baseline:     {rmse/baseline_rmse:.3f} (< 1.0 = beats mean predictor)")
 
 # ── Overfitting diagnostics ───────────────────────────────────────────────────
 gap_rmse = train_rmse - rmse   # negative = train harder than test (unusual)
@@ -463,11 +494,11 @@ dag_path   = os.path.join(OUTPUT_DIR, "skill_chain_dag.pkl")
 
 joblib.dump(final_model, model_path)
 joblib.dump({"dag": G, "dag_weight_lookup": dag_weight_lookup}, dag_path)
-# Also save the feature list so the service can verify alignment
-joblib.dump(REQUIRED_FEATURES, os.path.join(OUTPUT_DIR, "learning_path_features.pkl"))
+joblib.dump(FEATURES_FINAL, os.path.join(OUTPUT_DIR, "learning_path_features.pkl"))
 
 print(f"\nModel saved  -> {model_path}")
 print(f"DAG saved    -> {dag_path}")
 print("Model 4 training complete.")
 print("NOTE: emp_avg_score uses LOO mean — no target leakage.")
-print(f"      Model trained on {len(REQUIRED_FEATURES)} features: {REQUIRED_FEATURES}")
+print(f"      GroupKFold used throughout — no cross-employee leakage.")
+print(f"      Model trained on {len(FEATURES_FINAL)} features: {FEATURES_FINAL}")

@@ -169,8 +169,12 @@ class ApiClient {
       (await _request('GET', '/roles/$id')) as Map<String, dynamic>;
 
   // ── Attendance ────────────────────────────────────────────────────────────────
-  Future<List<dynamic>> getAttendance({String? from, String? to}) async {
-    final q = {if (from != null) 'from': from, if (to != null) 'to': to};
+  Future<List<dynamic>> getAttendance({String? from, String? to, String? department}) async {
+    final q = {
+      if (from != null) 'from': from,
+      if (to != null) 'to': to,
+      if (department != null) 'department': department,
+    };
     final path = q.isNotEmpty ? '/attendance?${_encodeQuery(q)}' : '/attendance';
     return (await _request('GET', path)) as List<dynamic>;
   }

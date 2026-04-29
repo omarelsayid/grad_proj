@@ -138,33 +138,38 @@ for col in df_clean.select_dtypes(include=[np.number]).columns:
 df_clean = df_clean.drop_duplicates(subset=["employee_id"], keep="first")
 
 # Outlier capping
-for col in ["salary_egp", "total_overtime_hours", "total_early_leave_min",
-            "commute_distance_km", "absence_rate", "late_rate"]:
+for col in ["commute_distance_km", "absence_rate", "late_rate"]:
     if col in df_clean.columns:
         cap_outliers(df_clean, col)
 
-# Feature engineering (9 derived features)
-df_clean["tenure_vs_experience"]  = df_clean["tenure_years"] / (df_clean["total_working_years"] + 1e-5)
-df_clean["promotion_gap_ratio"]   = df_clean["years_since_last_promotion"] / (df_clean["tenure_years"] + 1e-5)
-df_clean["salary_per_year_exp"]   = df_clean["salary_egp"] / (df_clean["total_working_years"] + 1e-5)
-df_clean["overtime_intensity"]    = df_clean["total_overtime_hours"] / (df_clean["avg_worked_hours"] + 1e-5)
-df_clean["absence_severity"]      = df_clean["absence_rate"] * df_clean["late_rate"]
-df_clean["attendance_quality"]    = df_clean["attendance_score"] * df_clean["avg_worked_hours"]
-df_clean["performance_score"]     = (df_clean["latest_eval_score"] + df_clean["kpi_score"]) / 2
-df_clean["engagement_score"]      = (
-    df_clean["courses_completed"] * 10 + df_clean["avg_training_score"]
-) / (df_clean["avg_feedback_score"] + 1)
-df_clean["work_balance_fit"]      = df_clean["work_life_balance"] * df_clean["role_fit_score"]
-
-# Encode categoricals
-for col in [c for c in df_clean.select_dtypes(include=["object"]).columns if c != "employee_id"]:
-    df_clean[col] = LabelEncoder().fit_transform(df_clean[col].astype(str))
+# Derive attendance_status_encoded from absence_rate (matches backend formula exactly)
+df_clean["attendance_status_encoded"] = df_clean["absence_rate"].apply(
+    lambda r: 2 if r > 0.20 else (1 if r > 0.10 else 0)
+)
 
 # ============================================================================
 # SECTION 3: PREPARE DATA
+# Only use features that the production backend can provide at inference time:
+#   tenure_years          ← backend: tenure_days / 365.25
+#   commute_distance_km   ← backend: emp.commuteDistanceKm
+#   role_fit_score        ← backend: calculateRoleFit()
+#   absence_rate          ← backend: absentCount / totalAtt
+#   late_rate             ← backend: lateCount / 30
+#   work_life_balance     ← backend: emp.satisfactionScore / 20  (100→5 scale)
+#   attendance_status_encoded ← backend: ATTENDANCE_MAP[status]
 # ============================================================================
 
-feature_cols = [c for c in df_clean.columns if c not in ["employee_id", "turnover_label"]]
+FEATURE_COLS = [
+    "tenure_years",
+    "commute_distance_km",
+    "role_fit_score",
+    "absence_rate",
+    "late_rate",
+    "work_life_balance",
+    "attendance_status_encoded",
+]
+
+feature_cols = FEATURE_COLS
 X = df_clean[feature_cols].values
 y = df_clean["turnover_label"].values
 print(f"Features: {len(feature_cols)}  |  Samples: {len(X)}")
@@ -344,7 +349,10 @@ all_results = pd.concat(
 print("\n=== FINAL RANKING ===")
 print(all_results.to_string(index=False))
 
-best_name = all_results.iloc[0]["Model"]
+# Select by ROC-AUC: more robust for small imbalanced datasets,
+# and ensures ensemble models (not overfit decision trees) are preferred.
+# Ensemble predict_proba outputs smooth intermediate values → realistic risk score spread.
+best_name = all_results.sort_values("ROC-AUC", ascending=False).iloc[0]["Model"]
 all_trained = {**trained1, **tuned_trained}
 best_pipe   = all_trained[best_name]["pipe"]
 best_preds  = all_trained[best_name]["preds"]

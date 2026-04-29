@@ -96,15 +96,18 @@ def recommend_learning_path(req: LearningPathRequest) -> LearningPathResponse:
                 gap_proxy = max(res_level - skill.gap, 0)
 
                 base_row = {
-                    "emp_proficiency":    max(0.0, float(skill.gap) - float(skill.gap)),  # infer as 0
+                    # emp_proficiency not in the request payload; the request carries
+                    # gap = min_proficiency - current_proficiency, so current is unknown
+                    # without min_proficiency. Safe default: 0 (worst case for the model).
+                    "emp_proficiency":      0.0,
                     "resource_skill_level": res_level,
-                    "skill_gap_proxy":    gap_proxy,
-                    "complexity_level":   skill.complexity_level,
-                    "dag_edge_weight":    0.5,           # unknown at inference; use neutral prior
-                    "duration_hours":     res.duration_hours,
-                    "emp_avg_score":      req.employee_avg_score,
-                    "emp_courses_done":   req.employee_courses_done,
-                    "attempt_number":     1,
+                    "skill_gap_proxy":      gap_proxy,
+                    "complexity_level":     skill.complexity_level,
+                    "dag_edge_weight":      0.5,
+                    "duration_hours":       res.duration_hours,
+                    "emp_avg_score":        req.employee_avg_score,
+                    "emp_courses_done":     req.employee_courses_done,
+                    "attempt_number":       1,
                 }
 
                 # Build full feature row; zero-fill any extra columns the model

@@ -57,7 +57,8 @@ def compute_role_fit(req: RoleFitRequest) -> RoleFitResponse:
         gap        = max(min_prof - current, 0.0)
 
         total_weighted_gap += gap * importance
-        total_weight       += 4 * importance    # max gap = 4
+        # Max gap = min_proficiency (when employee proficiency = 0, the unacquired state)
+        total_weight       += min_prof * importance
 
         if gap == 0:
             status = "met"
@@ -96,7 +97,7 @@ def compute_role_fit(req: RoleFitRequest) -> RoleFitResponse:
             "n_matching":       n_matching,
             "n_missing":        n_missing,
             "coverage_ratio":   n_matching / n_required if n_required else 0.0,
-            "weighted_gap":     (total_weighted_gap / total_weight * 4) if total_weight else 0.0,
+            "weighted_gap":     (total_weighted_gap / sum(rs.importance_weight for rs in req.role_requirements)) if req.role_requirements else 0.0,
             "max_gap":          max((g.gap for g in skill_gaps_detail), default=0.0),
             "avg_matched_prof": float(np.mean(matched_profs)) if matched_profs else 0.0,
         }])[FEATURE_COLS]

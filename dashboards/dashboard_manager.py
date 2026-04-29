@@ -16,7 +16,7 @@ from api_client import login_user, predict_role_fit_ml
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="SkillSync · Manager Analytics",
-    page_icon="📊",
+    page_icon="S",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -73,7 +73,7 @@ st.markdown("""
 # ══════════════════════════════════════════════════════════════════════════════
 
 def _sidebar_login():
-    st.sidebar.markdown("## 📊 Manager Analytics")
+    st.sidebar.markdown("## Manager Analytics")
     st.sidebar.markdown("---")
     with st.sidebar.form("login"):
         email    = st.text_input("Email",    value="tarek.mansour@skillsync.dev")
@@ -119,16 +119,16 @@ def _sidebar_user(department: str):
     u = st.session_state["mgr_user"]
     st.sidebar.markdown(
         f"<div class='user-card'>"
-        f"<b>👤 {u.get('name', u.get('email',''))}</b><br>"
+        f"<b>{u.get('name', u.get('email',''))}</b><br>"
         f"<span style='font-size:0.8rem;color:#64748b'>{u.get('email','')}</span><br>"
-        f"<span style='font-size:0.75rem;color:#0369a1'>📊 Manager</span>"
+        f"<span style='font-size:0.75rem;color:#0369a1'>Manager</span>"
         f"</div>",
         unsafe_allow_html=True,
     )
     st.sidebar.markdown(f"**Team Dept:** {department}")
     now = datetime.now()
-    st.sidebar.markdown(f"🕐 {now.strftime('%H:%M')} · {now.strftime('%d %b %Y')}")
-    if st.sidebar.button("🔄 Refresh all data", use_container_width=True):
+    st.sidebar.markdown(f"{now.strftime('%H:%M')} · {now.strftime('%d %b %Y')}")
+    if st.sidebar.button("Refresh all data", use_container_width=True):
         st.cache_data.clear()
         st.rerun()
     if st.sidebar.button("Sign Out", use_container_width=True):
@@ -136,7 +136,6 @@ def _sidebar_user(department: str):
         st.session_state.pop("mgr_token", None)
         st.rerun()
     st.sidebar.markdown("---")
-    st.sidebar.info("**HR Dashboard** → port **8501**")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -356,20 +355,20 @@ def _tab_overview(department: str):
 
     c1, c2, c3, c4 = st.columns(4)
     with c1:
-        st.metric("👥 Team Size", kpis["headcount"])
+        st.metric("Team Size", kpis["headcount"])
     with c2:
         r = kpis["att_rate"]
-        st.metric("✅ Attendance (30d)", f"{r:.1f}%",
+        st.metric("Attendance (30d)", f"{r:.1f}%",
                   delta="Healthy" if r >= 85 else "⚠ Below 85%",
                   delta_color="normal" if r >= 85 else "inverse")
     with c3:
         pl = kpis["pending_leaves"]
-        st.metric("📋 Pending Leaves", pl,
+        st.metric("Pending Leaves", pl,
                   delta="Awaiting action" if pl else None,
                   delta_color="inverse" if pl else "off")
     with c4:
         ar = kpis["at_risk"]
-        st.metric("⚠️ At-Risk Members", ar,
+        st.metric("At-Risk Members", ar,
                   delta="Needs attention" if ar else "All clear",
                   delta_color="inverse" if ar else "off")
 
@@ -380,7 +379,7 @@ def _tab_overview(department: str):
         # Subtle risk flags — sensitive, shown as compact cards
         flags = _risk_flags(department)
         if not flags.empty:
-            st.markdown('<div class="section-header">🚩 Retention Risk Flags</div>', unsafe_allow_html=True)
+            st.markdown('<div class="section-header">Retention Risk Flags</div>', unsafe_allow_html=True)
             for _, row in flags.iterrows():
                 lvl = row["risk_level"]
                 cls = "risk-flag-critical" if lvl == "critical" else "risk-flag"
@@ -394,7 +393,7 @@ def _tab_overview(department: str):
                     unsafe_allow_html=True,
                 )
         else:
-            st.success("✅ No retention risk flags for your team.")
+            st.success("No retention risk flags for your team.")
 
     with col_r:
         st.markdown('<div class="section-header">Team Members</div>', unsafe_allow_html=True)
@@ -407,7 +406,7 @@ def _tab_overview(department: str):
 
     # Today's live check-ins
     st.markdown("---")
-    st.markdown('<div class="section-header">📍 Today\'s Check-ins (live)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">Today\'s Check-ins (live)</div>', unsafe_allow_html=True)
     checkins = _todays_checkins(department)
     if checkins.empty:
         st.info("No check-ins recorded yet today for this department.")
@@ -418,13 +417,13 @@ def _tab_overview(department: str):
         not_in_ids  = set(not_in["name"]) - set(checkins["name"])
 
         mc1, mc2, mc3 = st.columns(3)
-        mc1.metric("✅ Checked In", len(checked_in))
-        mc2.metric("🏁 Checked Out", len(checked_out))
-        mc3.metric("❌ Not Yet", len(not_in_ids))
+        mc1.metric("Checked In", len(checked_in))
+        mc2.metric("Checked Out", len(checked_out))
+        mc3.metric("Not Yet", len(not_in_ids))
 
         disp = checkins[["name", "current_role", "check_in", "check_out", "status", "is_late"]].copy()
         disp.columns = ["Name", "Role", "Check In", "Check Out", "Status", "Late?"]
-        disp["Late?"] = disp["Late?"].map({True: "⚠ Late", False: "On time"})
+        disp["Late?"] = disp["Late?"].map({True: "Late", False: "On time"})
         disp["Check In"]  = disp["Check In"].fillna("—")
         disp["Check Out"] = disp["Check Out"].fillna("ongoing")
 
@@ -453,9 +452,17 @@ def _tab_overview(department: str):
 
 
 def _tab_heatmap(department: str):
+    team = _team(department)  # already capped at 10
     df = _skill_heatmap_data(department)
-    if df.empty:
+    if df.empty or team.empty:
         st.warning("No skill data found for this team. Ensure employees have skills recorded.")
+        return
+
+    # Restrict heatmap to the same 10 employees shown elsewhere
+    team_names = set(team["name"].tolist())
+    df = df[df["employee"].isin(team_names)]
+    if df.empty:
+        st.warning("No skill records found for the 10 team members.")
         return
 
     # Pivot: employees × skills
@@ -603,8 +610,8 @@ def _tab_replacements(department: str):
                 <div style="background:#3b82f6;width:{bar_pct}%;height:6px;border-radius:999px"></div>
             </div>
             <div style="font-size:0.8rem;color:#475569">
-                ✅ <b>Matching:</b> {matching_str}<br>
-                ⚠️ <b>Missing:</b> {missing_str}
+                <b>Matching:</b> {matching_str}<br>
+                <b>Missing:</b> {missing_str}
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -623,11 +630,11 @@ def _tab_attendance(department: str):
     # KPI row
     avg_rate = df["att_rate"].mean()
     c1, c2, c3 = st.columns(3)
-    with c1: st.metric("📅 Weeks Analysed", len(df))
-    with c2: st.metric("✅ Avg Attendance Rate", f"{avg_rate:.1f}%")
+    with c1: st.metric("Weeks Analysed", len(df))
+    with c2: st.metric("Avg Attendance Rate", f"{avg_rate:.1f}%")
     with c3:
         trend_dir = "↑ Improving" if len(df) > 1 and df["att_rate"].iloc[-1] > df["att_rate"].iloc[0] else "↓ Declining"
-        st.metric("📈 Trend", trend_dir,
+        st.metric("Trend", trend_dir,
                   delta_color="normal" if "↑" in trend_dir else "inverse",
                   delta=trend_dir)
 
@@ -684,8 +691,8 @@ def _tab_leaves(department: str):
     n_stale = int(df["stale"].sum())
 
     c1, c2 = st.columns(2)
-    with c1: st.metric("📋 Pending Approvals", n_total)
-    with c2: st.metric("⏰ Stale > 24h", n_stale,
+    with c1: st.metric("Pending Approvals", n_total)
+    with c2: st.metric("Stale > 24h", n_stale,
                        delta="Action needed" if n_stale else "All fresh",
                        delta_color="inverse" if n_stale else "off")
 
@@ -696,7 +703,7 @@ def _tab_leaves(department: str):
         hrs   = float(row["hours_pending"])
         stale = bool(row["stale"])
         cls   = "risk-flag" if stale else "candidate-card"
-        stale_badge = "<span class='stale-badge'>⏰ STALE</span>" if stale else ""
+        stale_badge = "<span class='stale-badge'>STALE</span>" if stale else ""
 
         reason = str(row.get("reason", "")) or "—"
 
@@ -745,7 +752,7 @@ def _pick_department() -> str:
 if "mgr_user" not in st.session_state:
     st.markdown("""
     <div class="dash-header">
-        <h1>📊 SkillSync · Manager Analytics Dashboard</h1>
+        <h1>SkillSync · Manager Analytics Dashboard</h1>
         <p>Sign in with your Manager credentials to access team analytics</p>
     </div>
     """, unsafe_allow_html=True)
@@ -765,17 +772,17 @@ _sidebar_user(department)
 now = datetime.now()
 st.markdown(f"""
 <div class="dash-header">
-    <h1>📊 SkillSync · Manager Analytics Dashboard</h1>
+    <h1>SkillSync · Manager Analytics Dashboard</h1>
     <p>Team: <b>{department}</b> &nbsp;·&nbsp; {now.strftime('%A, %d %B %Y')} &nbsp;·&nbsp; {now.strftime('%H:%M')}</p>
 </div>
 """, unsafe_allow_html=True)
 
 t1, t2, t3, t4, t5 = st.tabs([
-    "🏠 Team Overview",
-    "🔥 Skill Heatmap",
-    "🔄 Replacements",
-    "📅 Attendance",
-    "📋 Leave Approvals",
+    "Team Overview",
+    "Skill Heatmap",
+    "Replacements",
+    "Attendance",
+    "Leave Approvals",
 ])
 with t1: _tab_overview(department)
 with t2: _tab_heatmap(department)

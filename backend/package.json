@@ -16,6 +16,7 @@
     "db:seed:ml:force": "ts-node src/db/seed_ml.ts --force",
     "db:patch:role-skills": "ts-node src/db/seed_role_skills_patch.ts",
     "db:add-missing-skills": "ts-node src/db/add_missing_skills.ts",
+    "db:fix-role-skills": "ts-node src/db/fix_role_skill_gaps.ts",
     "test": "jest --runInBand",
     "test:coverage": "jest --runInBand --coverage",
     "lint": "eslint src --ext .ts",

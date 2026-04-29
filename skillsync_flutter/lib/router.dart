@@ -47,6 +47,7 @@ import 'presentation/hr/settings/screen.dart';
 import 'presentation/hr/notifications/screen.dart';
 import 'presentation/hr/chat/screen.dart';
 import 'presentation/hr/turnover/screen.dart';
+import 'presentation/hr/replacements/screen.dart';
 
 GoRouter buildRouter() => GoRouter(
   initialLocation: '/auth',
@@ -113,6 +114,7 @@ GoRouter buildRouter() => GoRouter(
         GoRoute(path: '/hr/policies', builder: (_, __) => const HrPoliciesScreen()),
         GoRoute(path: '/hr/analytics', builder: (_, __) => const HrAnalyticsScreen()),
         GoRoute(path: '/hr/turnover', builder: (_, __) => const HrTurnoverScreen()),
+        GoRoute(path: '/hr/replacements', builder: (_, __) => const HrReplacementsScreen()),
         GoRoute(path: '/hr/audit', builder: (_, __) => const HrAuditScreen()),
         GoRoute(path: '/hr/settings', builder: (_, __) => const HrSettingsScreen()),
         GoRoute(path: '/hr/notifications', builder: (_, __) => const HrNotificationsScreen()),
@@ -150,7 +152,8 @@ String _hrTitle(String path) {
     'dashboard': 'HR Dashboard', 'employees': 'Employee Directory', 'departments': 'Departments',
     'roles': 'Job Roles', 'attendance': 'Org Attendance', 'leaves': 'All Leaves',
     'payroll': 'Org Payroll', 'resignations': 'Resignations', 'policies': 'Policies',
-    'analytics': 'Analytics', 'turnover': 'Turnover Prediction', 'audit': 'Audit Log',
+    'analytics': 'Analytics', 'turnover': 'Turnover Prediction',
+    'replacements': 'Company-Wide Replacement Planning', 'audit': 'Audit Log',
     'settings': 'Settings', 'notifications': 'Notifications', 'chat': 'AI HR Chat',
   };
   final seg = path.split('/').last;

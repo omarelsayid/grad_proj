@@ -71,14 +71,14 @@ def predict_turnover(req: TurnoverRequest) -> TurnoverResponse:
     if _model is None:
         _load()
 
+    # Map backend fields → training feature names (must match train_turnover_model.py FEATURE_COLS)
     row = {
+        "tenure_years":              req.tenure_days / 365.25,
         "commute_distance_km":       req.commute_distance_km,
-        "tenure_days":               req.tenure_days,
         "role_fit_score":            req.role_fit_score,
         "absence_rate":              req.absence_rate,
-        "late_arrivals_30d":         req.late_arrivals_30d,
-        "leave_requests_90d":        req.leave_requests_90d,
-        "satisfaction_score":        req.satisfaction_score,
+        "late_rate":                 req.late_arrivals_30d / 30.0,
+        "work_life_balance":         req.satisfaction_score / 20.0,  # 0–100 → 0–5 scale
         "attendance_status_encoded": ATTENDANCE_MAP[req.attendance_status],
     }
 
@@ -90,8 +90,8 @@ def predict_turnover(req: TurnoverRequest) -> TurnoverResponse:
                 X[col] = 0
         X = X[_feature_names]
 
-    # Scale first (scaler was fitted on raw features before the pipeline)
-    X_scaled = _scaler.transform(X)
+    # Scale first — pass .values (numpy array) to avoid sklearn feature-name warning
+    X_scaled = _scaler.transform(X.values)
 
     # Pipeline routes through SMOTE (no-op at predict time) → classifier
     risk_score = float(_model.predict_proba(X_scaled)[0, 1]) * 100
